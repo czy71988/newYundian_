@@ -1,6 +1,7 @@
 
 import Vue from 'vue'
 import { orderStatus } from './commit'
+import dateUtil from './date'
 
 // 订单状态过滤
 Vue.filter('orderStatusFilter', val => {
@@ -29,4 +30,8 @@ Vue.filter('outtiame', val => {
   let s = date.getSeconds()
   s = s < 10 ? ('0' + s) : s
   return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+})
+
+Vue.filter('dateFilter', (val, format) => {
+  return dateUtil.format(val, format)
 })

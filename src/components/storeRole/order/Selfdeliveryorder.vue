@@ -36,7 +36,7 @@
             align="center"
             label="下单时间">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate}}</span>
+              <span>{{scope.row.gmtCreate | dateFilter('yyyy:MM:dd hh:mm:ss')}}</span>
             </template>
           </el-table-column>
           <el-table-column

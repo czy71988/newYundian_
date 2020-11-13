@@ -20,3 +20,13 @@ export function UserListDisable (data, catchConfig) {
   }, catchConfig)
   return req
 }
+
+// 注册商家/youmi-fresh/admin/user/register
+export function registerBusiness (data, catchConfig) {
+  const req = request({
+    method: 'POST',
+    url: '/admin/user/register',
+    data
+  }, catchConfig)
+  return req
+}

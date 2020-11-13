@@ -104,8 +104,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
-              <span class="Banner_spanout" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
+              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>查看详情</span>
             </template>
           </el-table-column>
         </el-table>

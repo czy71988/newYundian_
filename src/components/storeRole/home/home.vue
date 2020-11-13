@@ -51,14 +51,14 @@
             align="center"
             label="订单类型">
             <template slot-scope="scope">
-              <span>{{scope.row.logisticsType}}</span>
+              <span>{{scope.row.logisticsType | logisticsTypeFilter}}</span>
             </template>
           </el-table-column>
           <el-table-column
             align="center"
             label="下单时间">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate}}</span>
+              <span>{{scope.row.gmtCreate | dateFilter('MM:dd hh:mm:ss')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -164,6 +164,12 @@ const getTodyDate = () => {
 }
 const todyDate = getTodyDate()
 export default {
+  filters: {
+    logisticsTypeFilter (val) {
+      if (!val) return '--'
+      return val === 1 ? '自提订单' : '配送订单'
+    }
+  },
   data () {
     return {
       currentPage1: 1,
