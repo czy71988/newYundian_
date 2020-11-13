@@ -121,7 +121,7 @@
                   </el-menu-item-group>
                 </el-submenu>
 
-                <el-submenu index="4">
+                <!-- <el-submenu index="4">
                   <template slot="title">
                     <img class="dsfg" src="../assets/编组 8@2x.png" alt="">
                     <span :class="index === '4' ? 'sdawe' : ''">财务结算</span>
@@ -129,7 +129,7 @@
                   <el-menu-item-group>
                     <el-menu-item index="/FinancialSettlement">财务结算</el-menu-item>
                   </el-menu-item-group>
-                </el-submenu>
+                </el-submenu> -->
               </el-menu>
 
               <!-- 商家 -->

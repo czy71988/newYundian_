@@ -28,8 +28,8 @@ export default {
   data () {
     return {
       form: {
-        phone: '',
-        identifyCode: ''
+        phone: '12345678904',
+        identifyCode: '123456'
       },
       btntxt: '获取验证码',
       time: '',

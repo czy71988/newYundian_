@@ -40,22 +40,32 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="realPay"
             align="center"
             label="实付金额">
+            <template slot-scope="scope">
+              <span>{{scope.row.realPay}}</span>
+            </template>
           </el-table-column>
+
           <el-table-column
             prop="shopName"
             align="center"
             label="取货码">
+            <template slot-scope="scope">
+              <span>{{scope.row.pickNum}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="coreName"
             align="center"
             label="订单状态">
+            <template slot-scope="scope">
+              <span>{{scope.row.orderStatus}}</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            prop="buyMobile"
             align="center"
             label="买家手机号">
           </el-table-column>
@@ -64,7 +74,7 @@
             label="商品详情"
             width="100">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>点击查看详商品</span>
+              <span class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>点击查看详商品</span>
             </template>
           </el-table-column>
         </el-table>
@@ -119,19 +129,44 @@
 </template>
 
 <script>
+import { InterfaceOrderList } from '@/api/order'
+import { formatOrder } from '@/utils/format'
 export default {
   data () {
     return {
       shopxContent: [],
-      list: []
+      list: [],
+      form: {
+        orderType: 2,
+        logisticsType: 1,
+        pageNo: 1,
+        pageSize: 20
+      }
     }
   },
   mounted () {
+    this.getOrderList()
   },
   methods: {
     // 分页
     handleSizeChange (val) {},
-    handleCurrentChange (val) {}
+    handleCurrentChange (val) {},
+    getOrderList () {
+      const form = this.form
+      const { pageNo } = form
+      InterfaceOrderList(form).then(data => {
+        let list = data || []
+        if (list.length < 1) {
+          if (pageNo === 1) {
+            this.total = 0
+          }
+        }
+        list = list.map(item => {
+          return formatOrder(item)
+        })
+        this.list = pageNo === 1 ? list : [...this.list, ...list]
+      })
+    }
 
   }
 }
