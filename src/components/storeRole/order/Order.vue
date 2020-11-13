@@ -34,20 +34,23 @@
           </el-table-column>
           <el-table-column
             align="center"
-            label="操作时间">
+            label="下单时间">
             <template slot-scope="scope">
               <span>{{scope.row.gmtCreate}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="realPay"
             align="center"
             label="实付金额">
           </el-table-column>
           <el-table-column
-            prop="shopName"
+            prop="orderStatus"
             align="center"
             label="订单状态">
+            <template slot-scope="scope">
+              <span>{{scope.row.orderStatus}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             align="center"
@@ -66,10 +69,10 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="10"
+          :current-page.sync="form.pageNo"
+          :page-size="form.pageSize"
           layout="total, prev, pager, next"
-          :total="100">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -109,20 +112,44 @@
 </template>
 
 <script>
+import { InterfaceOrderList } from '@/api/order'
+import { formatOrder } from '@/utils/format'
 export default {
   data () {
     return {
       shopxContent: [],
-      list: []
+      list: [],
+      form: {
+        orderType: 1,
+        pageNo: 1,
+        pageSize: 20
+      },
+      total: 0
     }
   },
-  mounted () {
+  created () {
+    this.getOrderList()
   },
   methods: {
     // 分页
     handleSizeChange (val) {},
-    handleCurrentChange (val) {}
-
+    handleCurrentChange (val) {},
+    getOrderList () {
+      const form = this.form
+      const { pageNo } = form
+      InterfaceOrderList(form).then(data => {
+        let list = data || []
+        if (list.length < 1) {
+          if (pageNo === 1) {
+            this.total = 0
+          }
+        }
+        list = list.map(item => {
+          return formatOrder(item)
+        })
+        this.list = pageNo === 1 ? list : [...this.list, ...list]
+      })
+    }
   }
 }
 </script>

@@ -86,10 +86,10 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="10"
+          :current-page.sync="form.pageNo"
+          :page-size="form.pageSize"
           layout="total, prev, pager, next"
-          :total="100">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -141,7 +141,8 @@ export default {
         logisticsType: 1,
         pageNo: 1,
         pageSize: 20
-      }
+      },
+      total: 0
     }
   },
   mounted () {

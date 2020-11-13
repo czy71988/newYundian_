@@ -34,28 +34,34 @@
           </el-table-column>
           <el-table-column
             align="center"
-            label="操作时间">
+            label="下单时间">
             <template slot-scope="scope">
               <span>{{scope.row.gmtCreate}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="readPay"
             align="center"
             label="实付金额">
+            <template slot-scope="scope">
+              <span>{{scope.row.readPay}}</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="shopName"
+            prop="receiverFullAddress"
             align="center"
             label="收货人地址">
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            prop="orderStatus"
             align="center"
             label="订单状态">
+            <template slot-scope="scope">
+              <span>{{scope.row.orderStatus}}</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            prop="buyMobile"
             align="center"
             label="买家手机号">
           </el-table-column>
@@ -64,7 +70,7 @@
             label="查看详情"
             width="100">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>点击查看商品</span>
+              <span class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>点击查看商品</span>
             </template>
           </el-table-column>
         </el-table>
@@ -76,10 +82,10 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="10"
+          :current-page.sync="form.pageNo"
+          :page-size="form.pageSize"
           layout="total, prev, pager, next"
-          :total="100">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -121,20 +127,45 @@
 </template>
 
 <script>
+import { InterfaceOrderList } from '@/api/order'
+import { formatOrder } from '@/utils/format'
 export default {
   data () {
     return {
       shopxContent: [],
-      list: []
+      list: [],
+      form: {
+        orderType: 2,
+        logisticsType: 2,
+        pageNo: 1,
+        pageSize: 20
+      },
+      total: 0
     }
   },
-  mounted () {
+  created () {
+    this.getOrderList()
   },
   methods: {
     // 分页
     handleSizeChange (val) {},
-    handleCurrentChange (val) {}
-
+    handleCurrentChange (val) {},
+    getOrderList () {
+      const form = this.form
+      const { pageNo } = form
+      InterfaceOrderList(form).then(data => {
+        let list = data || []
+        if (list.length < 1) {
+          if (pageNo === 1) {
+            this.total = 0
+          }
+        }
+        list = list.map(item => {
+          return formatOrder(item)
+        })
+        this.list = pageNo === 1 ? list : [...this.list, ...list]
+      })
+    }
   }
 }
 </script>

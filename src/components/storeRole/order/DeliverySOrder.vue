@@ -40,39 +40,32 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="coreName"
             align="center"
-            label="商品编号">
+            label="拨货数量">
           </el-table-column>
           <el-table-column
             prop="shopName"
             align="center"
-            label="商品名称">
+            label="所属门店">
+          </el-table-column>
+          <el-table-column
+            prop="utletsoName"
+            align="center"
+            label="所属网点">
           </el-table-column>
           <el-table-column
             prop="coreName"
             align="center"
-            label="商品主图">
+            label="所属中心">
           </el-table-column>
           <el-table-column
-            prop="coreName"
             align="center"
-            label="商品价格">
-          </el-table-column>
-          <el-table-column
-            prop="coreName"
-            align="center"
-            label="所属类目">
-          </el-table-column>
-          <el-table-column
-            prop="coreName"
-            align="center"
-            label="商品重量（单位/ g）">
-          </el-table-column>
-          <el-table-column
-            prop="coreName"
-            align="center"
-            label="拨货数量">
+            label="查看详情"
+            width="100">
+            <template slot-scope="scope">
+              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
+            </template>
           </el-table-column>
         </el-table>
       </template>
@@ -83,10 +76,10 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="10"
+          :current-page.sync="form.pageNo"
+          :page-size="form.pageSize"
           layout="total, prev, pager, next"
-          :total="100">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -94,20 +87,44 @@
 </template>
 
 <script>
+import { InterfaceOrderList } from '@/api/order'
+import { formatOrder } from '@/utils/format'
 export default {
   data () {
     return {
       shopxContent: [],
-      list: []
+      list: [],
+      form: {
+        orderType: 3,
+        pageNo: 1,
+        pageSize: 20
+      },
+      total: 0
     }
   },
-  mounted () {
+  created () {
+    this.getOrderList()
   },
   methods: {
     // 分页
     handleSizeChange (val) {},
-    handleCurrentChange (val) {}
-
+    handleCurrentChange (val) {},
+    getOrderList () {
+      const form = this.form
+      const { pageNo } = form
+      InterfaceOrderList(form).then(data => {
+        let list = data || []
+        if (list.length < 1) {
+          if (pageNo === 1) {
+            this.total = 0
+          }
+        }
+        list = list.map(item => {
+          return formatOrder(item)
+        })
+        this.list = pageNo === 1 ? list : [...this.list, ...list]
+      })
+    }
   }
 }
 </script>
