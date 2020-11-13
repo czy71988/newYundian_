@@ -42,16 +42,11 @@
           <el-table-column
             prop="totalGoodsNum"
             align="center"
-<<<<<<< HEAD
             label="商品编号">
-=======
-            label="拨货数量">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             prop="shopName"
             align="center"
-<<<<<<< HEAD
             label="商品名称">
           </el-table-column>
           <el-table-column
@@ -63,14 +58,10 @@
             prop="coreName"
             align="center"
             label="商品价格">
-=======
-            label="所属门店">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             prop="coreName"
             align="center"
-<<<<<<< HEAD
             label="所属类目">
           </el-table-column>
           <el-table-column
@@ -82,17 +73,6 @@
             prop="coreName"
             align="center"
             label="拨货数量">
-=======
-            label="所属中心">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="查看详情"
-            width="100">
-            <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
-            </template>
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
         </el-table>
       </template>
@@ -110,41 +90,6 @@
         </el-pagination>
       </div>
     </div>
-<<<<<<< HEAD
-=======
-    <!-- dialog弹窗 -->
-
-    <!-- 弹窗部分 -- 商品创建编辑 -->
-    <div class="shopType_diagio">
-      <el-dialog
-        :visible.sync="shopShow">
-        <div class="uers_dialog">
-          <div>
-            <ul class="uers_log">
-              <li>商品ID</li>
-              <li>图片</li>
-              <li>名称</li>
-              <li>价格</li>
-              <li>数量</li>
-              <li>重量</li>
-              <li>标签</li>
-            </ul>
-            <ul class="uers_logs">
-              <li v-for="item in shopxContent" :key="item.id">
-                <span>1</span>
-                <span><img src="@/assets/微信图片_20201016132405.jpg" alt=""></span>
-                <span>可视对讲你哥哥</span>
-                <span>78</span>
-                <span>2000</span>
-                <span>200</span>
-                <span>当日达</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </el-dialog>
-    </div>
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   </div>
 </template>
 
@@ -205,46 +150,6 @@ export default {
         background-color: #D7E5FB;
       }
     }
-<<<<<<< HEAD
-=======
-    .shopType_diagio {
-      .el-dialog {
-        width: 500px;
-        // height: 430px;
-        background: #FFFFFF;
-        border-radius: 8px;
-        .el-dialog__header {
-          display: none;
-        }
-        .el-dialog__body {
-          padding: 0;
-          height: 100%;
-          .el-form {
-            box-sizing: border-box;
-            .el-form-item {
-              margin-bottom: 20px;
-              height: 30px;
-              line-height: 30px;
-              .el-form-item__label {
-                line-height: 30px;
-              }
-              .el-form-item__content {
-                text-align: left;
-                height: 30px;
-                line-height: 30px;
-                .el-input__inner {
-                  line-height: 30px;
-                  height: 30px;
-                  width: 300px;
-                  background: #F4F4F4;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   }
 </style>
 
@@ -308,15 +213,6 @@ export default {
         width: 30px;
         height: 30px;
       }
-<<<<<<< HEAD
-=======
-      .shopType_span1 {
-        font-size: 13px;
-        font-family: MicrosoftYaHei;
-        color: #2B80FD;
-        line-height: 17px;
-      }
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
       .shopType_span2 {
         font-size: 13px;
         font-family: MicrosoftYaHei;
@@ -341,57 +237,6 @@ export default {
         float: right;
       }
     }
-<<<<<<< HEAD
-=======
-    .shopType_diagio {
-      .uers_dialog {
-        padding: 10px;
-        box-sizing: border-box;
-        div {
-          .uers_log {
-            display: flex;
-            line-height: 30px;
-            background: #163D70;
-            border-radius: 6px 6px 0px 0px;
-            li {
-              flex: 1;
-              text-align: center;
-              list-style: none;
-              font-size: 13px;
-              font-family: PingFangSC-Semibold, PingFang SC;
-              font-weight: 600;
-              color: #FFFFFF;
-            }
-          }
-          .uers_logs {
-            li {
-              display: flex;
-              background: #F2F6FF;
-              align-items: center;
-              padding: 5px 0;
-              box-sizing: border-box;
-              margin-bottom: 5px;
-              span {
-                display:block;
-                white-space:nowrap;
-                overflow:hidden;
-                text-overflow:ellipsis;
-                flex: 1;
-                text-align: center;
-                font-size: 13px;
-                font-family: MicrosoftYaHei;
-                color: #333333;
-                img {
-                  height: 30px;
-                  width: 45px;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   }
   .chuangjian_shop_dialog {
     ul {

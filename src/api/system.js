@@ -50,7 +50,6 @@ export function InterfaceUpShop (data, catchConfig) {
   }, catchConfig)
   return req
 }
-<<<<<<< HEAD
 
 // 财务
 export function InterfaceFinance (data, catchConfig) {
@@ -61,5 +60,3 @@ export function InterfaceFinance (data, catchConfig) {
   }, catchConfig)
   return req
 }
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293

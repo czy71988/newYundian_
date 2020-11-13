@@ -10,14 +10,10 @@
             <div class="index_top"><img src="../assets/Image 1@2x.png" alt="">
             中通云店
             </div>
-<<<<<<< HEAD
 
             <!-- 运营后台 -->
               <el-menu
                 v-if="role === 'admin'"
-=======
-              <el-menu
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
                 :default-active="$route.path"
                 class="el-menu-vertical-demo"
                 @open="handleOpen"
@@ -80,7 +76,6 @@
                     <el-menu-item index="/mendian">门店管理</el-menu-item>
                     <el-menu-item index="/wangidan">网点管理</el-menu-item>
                     <el-menu-item index="/zhongxin">中心仓管理</el-menu-item>
-<<<<<<< HEAD
                     <el-menu-item index="/ShopStoer">商家管理</el-menu-item>
                     <el-menu-item index="/Commission">分佣设置</el-menu-item>
                   </el-menu-item-group>
@@ -244,11 +239,6 @@
                   <span slot="title">财务管理</span>
                 </el-menu-item>
               </el-menu>
-=======
-                  </el-menu-item-group>
-                </el-submenu>
-              </el-menu>
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
             </el-col>
           </el-row>
         </el-aside>
@@ -267,22 +257,16 @@
 <script>
 import { removeToken } from '../utils/auth'
 import { resetRouter } from '../router'
-<<<<<<< HEAD
 import { mapState } from 'vuex'
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
 export default {
   data () {
     return {
       index: ''
     }
   },
-<<<<<<< HEAD
   computed: {
     ...mapState(['role'])
   },
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   methods: {
     handleOpen (key, keyPath) {
       this.index = key

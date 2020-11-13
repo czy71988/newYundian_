@@ -2,13 +2,8 @@
   <div class="shopType">
     <!-- 商品类目创建头部 -->
     <div class="shopType_top">
-<<<<<<< HEAD
       <span>· 财务结算</span>
       <span>财务结算</span>
-=======
-      <span>· 首页</span>
-      <span>首页</span>
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
     </div>
 
     <div class="top">

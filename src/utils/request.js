@@ -1,10 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { reqConfig } from './config'
-<<<<<<< HEAD
 import { getToken } from '../utils/auth'
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
 // import baseURL from '../../vue.config'
 // import { MessageBox } from 'element-ui'
 
@@ -21,12 +18,9 @@ const service = axios.create({
 // 请求拦截
 service.interceptors.request.use(config => {
   config.baseURL = reqConfig.baseUrl
-<<<<<<< HEAD
   config.headers = {
     token: getToken()
   }
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   return config
 }, err => {
   return Promise.reject(err)

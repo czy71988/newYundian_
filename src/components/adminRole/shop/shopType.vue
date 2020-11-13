@@ -44,14 +44,11 @@
             </template>
           </el-table-column>
           <el-table-column
-<<<<<<< HEAD
             prop="commissionRate"
             align="center"
             label="分佣比例">
           </el-table-column>
           <el-table-column
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
             align="center"
             label="操作"
             width="300">
@@ -101,12 +98,9 @@
                 <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
-<<<<<<< HEAD
             <el-form-item label="分佣比例：">
               <el-input v-model="form.commissionRate"></el-input>
             </el-form-item>
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
             <div class="chuangjian_dialog">
               <span @click="shopShow = !shopShow">取消</span>
               <span @click="chuangjianOver">{{sdbgg}}</span>
@@ -125,12 +119,8 @@ export default {
     return {
       form: {
         name: '',
-<<<<<<< HEAD
         imageUrl: '',
         commissionRate: ''
-=======
-        imageUrl: ''
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
       },
       currentPage1: 1,
       shopShow: false,

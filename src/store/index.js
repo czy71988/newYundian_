@@ -2,26 +2,16 @@ import user from './modules/user'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import routesMap from '../router/routesMap'
-<<<<<<< HEAD
 // import { getMenusByRoutes } from '../utils/menu'
 import router from '../router'
 import { setToken } from '../utils/auth'
 import { yundianLogin } from '../api/login'
-=======
-import { getMenusByRoutes } from '../utils/menu'
-import router from '../router'
-import { setToken } from '../utils/auth'
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
 Vue.use(Vuex)
 
 const state = {
   env: localStorage.getItem('ym_env'),
-<<<<<<< HEAD
   menus: [],
   role: ''
-=======
-  menus: []
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
 }
 
 const mutations = {
@@ -31,12 +21,9 @@ const mutations = {
   },
   UPDATE_MENUS (state, data) {
     state.menus = data
-<<<<<<< HEAD
   },
   update_role (state, data) {
     state.role = data
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   }
 }
 
@@ -48,7 +35,6 @@ const getters = {
 
 const actions = {
   login ({ commit }, data = {}) {
-<<<<<<< HEAD
     yundianLogin({
       phone: data.phone,
       identifyCode: data.identifyCode
@@ -69,15 +55,6 @@ const actions = {
       router.push('/')
       // const menus = getMenusByRoutes(routes)
     })
-=======
-    const { phone } = data
-    const routes = routesMap[phone]
-    const menus = getMenusByRoutes(routes)
-    router.addRoutes(routes)
-    setToken(phone || Date.now())
-    router.push({ name: 'index' })
-    commit('UPDATE_MENUS', menus)
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   }
 }
 

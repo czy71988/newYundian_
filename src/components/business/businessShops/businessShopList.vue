@@ -7,7 +7,7 @@
       <div class="BanNer_top_p">
         <span>商品标题：</span>
         <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
-        <span>审核状态</span>
+        <span>审核状态：</span>
         <el-select v-model="getform.label" placeholder="请选择">
           <el-option
             v-for="item in dfgsdf"
@@ -293,6 +293,7 @@ export default {
       InterfaceshopSohp(this.getform).then(data => {
         this.tableData = data.records
         this.total = data.total
+        console.log(this.tableData)
       })
     },
 

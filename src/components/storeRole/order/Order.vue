@@ -42,25 +42,12 @@
           <el-table-column
             prop="totalGoodsNum"
             align="center"
-<<<<<<< HEAD
             label="实付金额">
-=======
-            label="拨货数量">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             prop="shopName"
             align="center"
-<<<<<<< HEAD
             label="订单状态">
-=======
-            label="所属门店">
-          </el-table-column>
-          <el-table-column
-            prop="coreName"
-            align="center"
-            label="所属中心">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             align="center"

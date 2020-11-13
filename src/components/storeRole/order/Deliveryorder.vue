@@ -42,45 +42,29 @@
           <el-table-column
             prop="totalGoodsNum"
             align="center"
-<<<<<<< HEAD
             label="实付金额">
-=======
-            label="拨货数量">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             prop="shopName"
             align="center"
-<<<<<<< HEAD
             label="收货人地址">
-=======
-            label="所属门店">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             prop="coreName"
             align="center"
-<<<<<<< HEAD
             label="订单状态">
           </el-table-column>
           <el-table-column
             prop="coreName"
             align="center"
             label="买家手机号">
-=======
-            label="所属中心">
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
           </el-table-column>
           <el-table-column
             align="center"
             label="查看详情"
             width="100">
             <template slot-scope="scope">
-<<<<<<< HEAD
               <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>点击查看商品</span>
-=======
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
             </template>
           </el-table-column>
         </el-table>
@@ -111,10 +95,7 @@
               <li>商品ID</li>
               <li>图片</li>
               <li>名称</li>
-<<<<<<< HEAD
               <li>类目</li>
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
               <li>价格</li>
               <li>数量</li>
               <li>重量</li>
@@ -125,12 +106,8 @@
                 <span>1</span>
                 <span><img src="@/assets/微信图片_20201016132405.jpg" alt=""></span>
                 <span>可视对讲你哥哥</span>
-<<<<<<< HEAD
                 <span>酒水</span>
                 <span>89</span>
-=======
-                <span>78</span>
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
                 <span>2000</span>
                 <span>200</span>
                 <span>当日达</span>

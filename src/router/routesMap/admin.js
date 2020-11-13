@@ -63,7 +63,6 @@ const routes = [
     path: '/Commodi',
     name: 'Commodi',
     component: () => import(/* webpackChunkName: "adminRole" */ '@/components/adminRole/shop/Commodi.vue')
-<<<<<<< HEAD
   },
   {
     path: '/ShopStoer',
@@ -74,8 +73,6 @@ const routes = [
     path: '/Commission',
     name: 'Commission',
     component: () => import(/* webpackChunkName: "adminRole" */ '@/components/adminRole/xitongshezhi/Commission.vue')
-=======
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
   }
 ]
 

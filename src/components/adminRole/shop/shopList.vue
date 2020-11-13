@@ -224,11 +224,7 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import BigImg from '../../common/map-selector/BigImg'
-=======
-import BigImg from './BigImg'
->>>>>>> aa6bbf950d5c5185e512ca76241a306634b76293
 import { InterfaceAddshopdetails, InterfaceshopSohp, InterfaceGoodsShelves, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle } from '@/api/shop'
 import { deleteElementByValue } from '@/utils/khg'
 export default {
