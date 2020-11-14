@@ -15,3 +15,10 @@
 *{margin:0; padding:0;}
 
 </style>
+<style lang="less">
+.el-image-viewer__wrapper {
+  .el-icon-circle-close:before {
+    color: #FFFFFF;
+  }
+}
+</style>

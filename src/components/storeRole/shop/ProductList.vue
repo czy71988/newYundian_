@@ -6,12 +6,12 @@
       <!-- <div @click="chuangjian">创建Banner</div> -->
       <div class="BanNer_top_p">
         <span>商品编号：</span>
-        <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
+        <el-input v-model="getform.itemId" placeholder="请输入商品编号"></el-input>
         <span>商品标题：</span>
-        <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
+        <el-input v-model="getform.title" placeholder="请输入商品标题"></el-input>
         <div>
           <el-button type="primary" round  @click="sousuo">搜索</el-button>
-          <el-button type="info" round>重置</el-button>
+          <el-button type="info" round @click="onReset">重置</el-button>
           <el-button type="warning" round>导出</el-button>
         </div>
       </div>
@@ -38,10 +38,15 @@
             label="主图">
             <template slot-scope="scope">
             <!-- <template> -->
-              <img class="sdfsgerg" :src="scope.row.mainPic" alt="">
+            <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.mainPic"
+              :preview-src-list="[scope.row.mainPic]">
+            </el-image>
+              <!-- <img class="sdfsgerg" :src="scope.row.mainPic" alt=""> -->
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="storeHouse"
             align="center"
             label="商品详情图">
@@ -54,11 +59,11 @@
               </el-image>
               <span v-else @click="mokedetailsUrls(scope.row.id)">点击查看详情图</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="title"
             align="center"
-            label="商品名称">
+            label="商品标题">
           </el-table-column>
           <!-- <el-table-column
             prop="gmtCreate"
@@ -104,7 +109,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>查看详情</span>
+              <span class="Banner_span1" @click="onLookDetail(scope.row)"><i class="el-icon-edit"></i>查看详情</span>
             </template>
           </el-table-column>
         </el-table>
@@ -116,8 +121,8 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="10"
+          :current-page.sync="getform.pageNo"
+          :page-size="getform.pageSize"
           layout="total, prev, pager, next"
           :total="total">
         </el-pagination>
@@ -127,22 +132,22 @@
     <!-- 弹窗部分 -- 商品创建编辑 -->
     <div class="BanNer_diagio">
       <el-dialog
-        :before-close="jdhigjheirg"
         :visible.sync="shopShow">
         <p class="sdsd">{{biaotiname}}</p>
         <div class="chuangjian_shop_dialog">
           <el-form ref="form" :model="form" label-width="100px">
             <el-form-item label="商品标题：">
-              <el-input v-model="form.title"></el-input>
+              <el-input v-model="form.title" disabled></el-input>
             </el-form-item>
             <el-form-item label="商品主图：">
               <el-upload
+                disabled
                 class="avatar-uploader"
                 action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <img v-if="form.mainPic" :src="form.mainPic" class="avatar">
                 <div v-else class="avatar-uploader-icon">
                   <i class="el-icon-circle-plus-outline"></i><span class="sdhfhogerg" v-if="!imageUrl">点击或将图片拖拽到这里上传支持扩展名：png、jpg、jpeg</span>
                 </div>
@@ -150,25 +155,27 @@
             </el-form-item>
             <el-form-item label="详情图：">
               <el-upload
+                disabled
                 action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
                 list-type="picture-card"
-                :file-list="dialogImageUrl"
+                :file-list="form.imgs"
+                show-file-list
                 :on-preview="handlePictureCardPreview"
                 :on-success="dbfbiebibkfjbrgdfg"
                 :on-remove="handleRemove">
-                <div class="avatar-uploader-icon">
+                <!-- <div class="avatar-uploader-icon">
                   <i class="el-icon-circle-plus-outline"></i><span class="sdhfhogerg">点击或将图片拖拽到这里上传支持扩展名：png、jpg、jpeg</span>
-                </div>
+                </div> -->
               </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl.url" alt="">
-              </el-dialog>
+              <!-- <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+              </el-dialog> -->
             </el-form-item>
             <el-form-item label="销售价：">
-              <el-input v-model="form.price"></el-input>
+              <el-input v-model="form.price" disabled></el-input>
             </el-form-item>
             <el-form-item label="所属类目：">
-              <el-select v-model="form.categoryId" placeholder="请选择活动区域">
+              <el-select v-model="form.categoryId" placeholder="请选择活动区域" disabled>
                 <el-option
                   v-for="item in ShopStyle"
                   :key="item.id"
@@ -178,10 +185,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="规格：">
-              <el-input v-model="form.weight"></el-input>
+              <el-input v-model="form.weight" disabled></el-input>
             </el-form-item>
             <el-form-item label="库存：">
-              <el-input v-model="form.amount"></el-input>
+              <el-input v-model="form.amount" disabled></el-input>
             </el-form-item>
             <el-form-item>
               <el-button @click="jdhigjheirg">取消</el-button>
@@ -190,15 +197,32 @@
         </div>
       </el-dialog>
     </div>
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
+      :url-list="dialogImageUrl" />
   </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer.vue'
 import { InterfaceshopSohp, Interfaceshopdetails, InterfaceGoodsStyle } from '@/api/shop'
 import { deleteElementByValue } from '@/utils/khg'
+const getDefaultSearchForm = () => {
+  return {
+    pageNo: 1,
+    pageSize: 3,
+    title: '',
+    itemId: ''
+  }
+}
 export default {
+  components: {
+    ElImageViewer
+  },
   data () {
     return {
+      showViewer: false,
       imgSrc: '',
       imgSrc1: '',
       deleteElementByValue,
@@ -223,12 +247,7 @@ export default {
         weight: ''
       },
       // 请求列表参数
-      getform: {
-        pageNo: '1',
-        pageSize: '10',
-        title: '',
-        label: ''
-      },
+      getform: getDefaultSearchForm(),
       dfgsdf: [
         { value: '0', label: '待审核' },
         { value: '1', label: '审核通过' },
@@ -245,8 +264,10 @@ export default {
     }
   },
   props: ['pagedata'],
-  mounted () {
+  created () {
     this.getStyle()
+  },
+  mounted () {
     this.getlist()
   },
   methods: {
@@ -280,13 +301,19 @@ export default {
     // 获取列表
     getlist () {
       InterfaceshopSohp(this.getform).then(data => {
+        console.log(data)
+        console.log(data.records)
         this.tableData = data.records
         this.total = data.total
       })
     },
-
+    onReset () {
+      this.getform = getDefaultSearchForm()
+      this.getlist()
+    },
     // 搜索操作
     sousuo () {
+      this.getform.pageNo = 1
       this.getlist()
     },
 
@@ -310,7 +337,25 @@ export default {
         this.dialogImageUrl = data.imageContent
       })
     },
-
+    // 查看商品详情
+    onLookDetail (item) {
+      this.jdhigjheirg()
+      this.biaotiname = '商品详情'
+      const goodsItem = Object.assign({}, item)
+      console.log({
+        name: '',
+        url: item.mainPic
+      })
+      goodsItem.imgs = [{
+        name: '1',
+        url: item.mainPic
+      }, {
+        name: '2',
+        url: item.mainPic
+      }]
+      this.form = goodsItem
+      this.shopShow = true
+    },
     mokedetailsUrls (id) {
       this.xiangqingtu = []
       Interfaceshopdetails({
@@ -377,10 +422,15 @@ export default {
       const url = file.url
       this.form.imageContent = deleteElementByValue(this.form.imageContent, url)
     },
-
+    closeViewer () {
+      this.shopShow = true
+      this.showViewer = false
+    },
     handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
+      console.log(file)
+      this.dialogImageUrl = [file.url]
+      this.showViewer = true
+      this.shopShow = false
     },
 
     dbfbiebibkfjbrgdfg (res, file) {
@@ -392,6 +442,16 @@ export default {
 
 <style lang="less">
   .shopList {
+    .el-upload-list  {
+      &.is-disabled {
+        .el-upload-list__item-status-label {
+          display: none;
+        }
+        & + .el-upload {
+          display: none;
+        }
+      }
+    }
     .BanNer_top_p {
       line-height: 20px;
       text-align: left;
@@ -495,6 +555,7 @@ export default {
               .el-form-item__content {
                 .el-input {
                   width: 200px;
+                  width: 267px;
                 }
               }
                .avatar-uploader {

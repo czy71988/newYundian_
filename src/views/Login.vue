@@ -16,7 +16,7 @@
       </div>
       <div class="row">
         <div>登录即同意服务条款</div>
-        <div @click="onGoReg"><span>商家用户请先</span><span class="link">注册</span></div>
+        <div @click="onGoReg"><span class="link-wrap">商家用户请先</span><span class="link">注册</span></div>
       </div>
       <div class="Login_btn">
         <span @click="login">登录</span>
@@ -40,6 +40,8 @@ export default {
       time: '',
       disabled: false
     }
+  },
+  created () {
   },
   methods: {
     login () {
@@ -81,10 +83,12 @@ export default {
   .Login {
     .row {
       display: flex;
-      justify-content: space-between;
+      // justify-content: space-between;
       box-sizing: border-box;
-      padding-right: 110px;
       .link {
+        &-wrap {
+          margin-left: 276px;
+        }
         text-decoration: underline;
         color: blue;
         cursor: pointer;

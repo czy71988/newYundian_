@@ -25,7 +25,7 @@ export function UserListDisable (data, catchConfig) {
 export function registerBusiness (data, catchConfig) {
   const req = request({
     method: 'POST',
-    url: '/admin/user/register',
+    url: '/youmi-fresh/admin/user/register',
     data
   }, catchConfig)
   return req

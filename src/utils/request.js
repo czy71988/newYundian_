@@ -30,11 +30,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(res => {
   const data = res.data
   if (data.code !== 200) {
-    Message({
-      showClose: true,
-      message: data.message,
-      type: 'error'
-    })
+    return Promise.reject(new Error(data.message))
   }
   return data.data
 }, err => {
@@ -69,6 +65,16 @@ const request = (config = {}, catchConfig) => {
   const promise = new Promise((resolve, reject) => {
     service(config).then(data => {
       resolve(data)
+    }).catch((err) => {
+      reject(err)
+      if (catchConfig === false) {
+        return
+      }
+      Message({
+        showClose: true,
+        message: err.message,
+        type: 'error'
+      })
     })
   })
   return promise
