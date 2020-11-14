@@ -39,6 +39,9 @@ const actions = {
       phone: data.phone,
       identifyCode: data.identifyCode
     }).then(data => {
+      console.log(data)
+      sessionStorage.setItem('uers', data.phone)
+      sessionStorage.setItem('id', data.shopId)
       const roleMap = {
         0: 'admin', // 运营账号
         1: 'business', // 商家账号

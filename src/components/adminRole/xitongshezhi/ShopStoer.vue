@@ -2,14 +2,14 @@
   <div class="shopList">
     <!-- 头部部分 -->
     <div class="BanNer_top">
-      <p>· 系统设置  门店管理</p>
+      <p>· 系统设置  商家管理</p>
       <!-- <div @click="chuangjian">创建Banner</div> -->
       <div class="BanNer_top_p">
-        <span>门店名称：</span>
+        <span>商家名称：</span>
         <el-input v-model="from.title" placeholder="请输入内容"></el-input>
         <span>手机号：</span>
         <el-input v-model="from.phone" placeholder="请输入内容"></el-input>
-        <span>所属中心仓：</span>
+        <!-- <span>所属中心仓：</span>
         <el-select v-model="dkjgbkebr" placeholder="请选择" @change="sjferg">
           <el-option
             label="全部"
@@ -43,7 +43,7 @@
             :label="item.label"
             :value="item.value">
           </el-option>
-        </el-select>
+        </el-select> -->
         <div>
           <span @click="sousupo">搜索</span>
           <span>批量导出</span>
@@ -60,17 +60,22 @@
           <el-table-column
             prop="id"
             align="center"
-            label="店铺编号">
+            label="商家ID">
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="title"
             align="center"
             label="门店名称">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="managerName"
             align="center"
-            label="店主姓名">
+            label="姓名">
+          </el-table-column>
+          <el-table-column
+            prop="phone"
+            align="center"
+            label="微信号">
           </el-table-column>
           <el-table-column
             prop="phone"
@@ -78,14 +83,29 @@
             label="手机号码">
           </el-table-column>
           <el-table-column
+            prop="phone"
+            align="center"
+            label="品牌名称">
+          </el-table-column>
+          <!-- <el-table-column
+            prop="phone"
+            align="center"
+            label="营业执照">
+          </el-table-column>
+          <el-table-column
+            prop="phone"
+            align="center"
+            label="身份证照片">
+          </el-table-column> -->
+          <!-- <el-table-column
             prop="state"
             align="center"
             label="状态">
             <template slot-scope="scope">
               <span>{{scope.row.state == 0 ? '停用' : '启用'}}</span>
             </template>
-          </el-table-column>
-          <el-table-column
+          </el-table-column> -->
+          <!-- <el-table-column
             prop="address"
             align="center"
             label="门店地址">
@@ -127,7 +147,7 @@
             prop="idcard"
             align="center"
             label="身份证号">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             align="center"
             label="身份证照片">
@@ -142,20 +162,20 @@
               <img class="djkhgergbjdv" :src="scope.row.licenseUrl" alt="">
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="tyshxyDm"
             align="center"
             label="统一社会信用代码">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             align="center"
             label="操作"
             width="200">
             <template slot-scope="scope">
               <span class="sdreg aefsdgf" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
-              <span class="sdreg aefsdgf" @click="CommodityManagement(scope.row.id, scope.row.parentId)"><i class=""></i>商品管理</span>
+              <!-- <span class="sdreg aefsdgf" @click="CommodityManagement(scope.row.id, scope.row.parentId)"><i class=""></i>商品管理</span>
               <span class="sdreg" v-if="scope.row.state === 0" @click="shangjia(1, scope.row)"><i class="el-icon-sort"></i>上架</span>
-              <span class="sdreg djfruhgiio" v-else @click="shangjia(0, scope.row)"><i class="el-icon-sort"></i>下架</span>
+              <span class="sdreg djfruhgiio" v-else @click="shangjia(0, scope.row)"><i class="el-icon-sort"></i>下架</span> -->
             </template>
           </el-table-column>
         </el-table>

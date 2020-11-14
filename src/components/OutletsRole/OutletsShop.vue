@@ -10,7 +10,7 @@
         <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
         <div>
           <el-button type="primary" round  @click="sousuo">搜索</el-button>
-          <el-button type="info" round>重置</el-button>
+          <el-button type="info" @click="Reset" round>重置</el-button>
           <el-button type="warning" round>导出</el-button>
         </div>
       </div>
@@ -122,6 +122,16 @@ export default {
   },
   methods: {
 
+    // 重置操作
+    Reset () {
+      this.getform = {
+        pageNo: '1',
+        pageSize: '10',
+        title: '',
+        itemId: ''
+      }
+      this.getlist()
+    },
     // 获取列表
     getlist () {
       InterfaceshopSohp(this.getform).then(data => {

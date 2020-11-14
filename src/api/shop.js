@@ -90,3 +90,13 @@ export function InterfaceGoodsStyle (data, catchConfig) {
   }, catchConfig)
   return req
 }
+
+// 商品审核
+export function InterfaceGoodsExamine (data, catchConfig) {
+  const req = request({
+    method: 'post',
+    url: '/youmi-fresh/admin/product/examine',
+    data
+  }, catchConfig)
+  return req
+}

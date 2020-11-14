@@ -8,14 +8,14 @@
         <span>商品标题：</span>
         <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
         <span>审核状态：</span>
-        <el-select v-model="getform.label" placeholder="请选择">
+        <!-- <el-select v-model="getform.label" placeholder="请选择">
           <el-option
             v-for="item in dfgsdf"
             :key="item.value"
             :label="item.label"
             :value="item.value">
           </el-option>
-        </el-select>
+        </el-select> -->
         <div>
           <el-button type="primary" round  @click="sousuo">搜索</el-button>
           <el-button type="info" round>重置</el-button>
@@ -30,20 +30,17 @@
           :data="tableData"
           stripe
           style="width: 100%">
-          <!-- <el-table-column
-            prop="id"
-            align="center"
-            label="商品ID">
-          </el-table-column> -->
           <el-table-column
             prop="itemId"
             align="center"
             label="商品编号">
           </el-table-column>
           <el-table-column
-            prop="gmtCreate"
             align="center"
             label="上传时间">
+            <template slot-scope="scope">
+              <span>{{scope.row.gmtCreate | outtiame}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="title"
@@ -88,14 +85,16 @@
             label="规格">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="submitAmount"
             align="center"
             label="库存数量">
           </el-table-column>
           <el-table-column
-            prop="amount"
             align="center"
             label="审核状态">
+            <template slot-scope="scope">
+              <span>{{scope.row.examine === 1 ? '审核通过' : (scope.row.examine === 2 ? '审核拒绝' : '待审核')}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="amount"
@@ -103,17 +102,17 @@
             label="入仓数量">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="submitAmount"
             align="center"
             label="销售数量">
           </el-table-column>
           <el-table-column
             align="center"
             label="操作"
-            width="300">
+            width="100">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
-              <span class="Banner_spanout" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
+              <span v-if="scope.row.examine !== 1" class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
+              <span v-else class="Banner_spanout" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
             </template>
           </el-table-column>
         </el-table>
@@ -191,7 +190,7 @@
               <el-input v-model="form.weight"></el-input>
             </el-form-item>
             <el-form-item label="库存：">
-              <el-input v-model="form.amount"></el-input>
+              <el-input v-model="form.submitAmount"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button @click="jdhigjheirg">取消</el-button>
@@ -205,7 +204,7 @@
 </template>
 
 <script>
-import { InterfaceAddshopdetails, InterfaceshopSohp, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle } from '@/api/shop'
+import { InterfaceAddshopdetails, InterfaceshopSohp, Interfaceshopdetails, InterfaceGoodsStyle, InterfaceGoodsExamine } from '@/api/shop'
 import { deleteElementByValue } from '@/utils/khg'
 export default {
   data () {
@@ -223,22 +222,22 @@ export default {
       dialogImageUrl: [],
       xiangqingtu: [],
       form: {
+        businessId: '',
         title: '',
         mainPic: '', // 商品主图
         imageContent: [], // 商品详情图
-        label: '',
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        submitAmount: '',
         weight: ''
       },
       // 请求列表参数
       getform: {
         pageNo: '1',
         pageSize: '10',
-        title: '',
-        label: ''
+        title: ''
+        // label: ''
       },
       dfgsdf: [
         { value: '0', label: '待审核' },
@@ -271,7 +270,7 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        submitAmount: '',
         weight: ''
       }
       this.urls = []
@@ -364,7 +363,10 @@ export default {
         })
       } else {
         // 编辑操作
-        InterfaceGoodsUpdate(this.form).then(data => {
+        InterfaceGoodsExamine({
+          examine: 0,
+          amount: this.form.submitAmount
+        }).then(data => {
           this.$message({
             message: '修改商品成功',
             type: 'success'

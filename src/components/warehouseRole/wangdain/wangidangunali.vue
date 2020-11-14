@@ -47,11 +47,6 @@
             align="center"
             label="网点地址">
           </el-table-column>
-          <!-- <el-table-column
-            prop="parentTitle"
-            align="center"
-            label="所属中心">
-          </el-table-column> -->
           <el-table-column
             align="center"
             label="状态">
@@ -159,6 +154,7 @@ export default {
         longitude: '',
         latitude: '',
         parentTitle: '',
+        parentId: sessionStorage.getItem('id'),
         type: 3
       },
       // 获取列表表单
@@ -191,6 +187,7 @@ export default {
         longitude: '',
         latitude: '',
         parentTitle: '',
+        parentId: sessionStorage.getItem('id'),
         type: 3
       }
     },

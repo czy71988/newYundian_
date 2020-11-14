@@ -9,19 +9,6 @@
         <el-input v-model="from.title" placeholder="请输入内容"></el-input>
         <span>手机号：</span>
         <el-input v-model="from.phone" placeholder="请输入内容"></el-input>
-        <!-- <span>所属中心仓：</span>
-        <el-select v-model="dkjgbkebr" placeholder="请选择" @change="sjferg">
-          <el-option
-            label="全部"
-            value="">
-          </el-option>
-          <el-option
-            v-for="item in sjdh"
-            :key="item.id"
-            :label="item.title"
-            :value="item.id">
-          </el-option>
-        </el-select> -->
         <span>所属网点：</span>
         <el-select v-model="from.parentId" placeholder="请选择">
           <el-option
@@ -29,21 +16,12 @@
             value="">
           </el-option>
           <el-option
-            v-for="item in djjgierig"
+            v-for="item in sdfswfsdd"
             :key="item.id"
             :label="item.title"
             :value="item.id">
           </el-option>
         </el-select>
-        <!-- <span>配送方式：</span>
-        <el-select v-model="from.eleme" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select> -->
         <div>
           <span @click="sousupo">搜索</span>
           <span>批量导出</span>
@@ -82,14 +60,6 @@
             align="center"
             label="门店地址">
           </el-table-column>
-          <!-- <el-table-column
-            prop="state"
-            align="center"
-            label="状态">
-            <template slot-scope="scope">
-              <span>{{scope.row.state == 0 ? '停用' : '启用'}}</span>
-            </template>
-          </el-table-column> -->
           <el-table-column
             prop="shopH"
             align="center"
@@ -202,38 +172,6 @@
                   <el-option v-for="item in sdfswfsdd" :key="item.id" :label="item.title" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
-              <!-- <el-form-item label="身份证号：">
-                <el-input v-model="form.idcard"></el-input>
-              </el-form-item>
-              <el-form-item label="身份证照片：">
-                <div class="kdjgiuerg">
-                  <el-upload
-                    class="avatar-uploader"
-                    :action="sdjdhui"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </div>
-              </el-form-item>
-              <el-form-item label="营业执照照片：">
-                <div class="kdjgiuerg">
-                  <el-upload
-                    class="avatar-uploader"
-                    action="https://test.zk020.cn/youmi-fresh/admin/eleme/uploadFile"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess1"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl1" :src="imageUrl1" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </div>
-              </el-form-item>
-              <el-form-item label="统一社会信用代码：">
-                <el-input v-model="form.tyshxyDm"></el-input>
-              </el-form-item> -->
               <p class="sdferg">
                 <span @click="dialogVisible = false">取消</span>
                 <span @click="over">提交</span>
@@ -257,7 +195,7 @@
 </template>
 
 <script>
-import { InterfaceShop, InterfaceDropdownList, InterfaceAddShop, InterfaceUpShop, InterfaceDropdownlastList } from '@/api/system'
+import { InterfaceShop, InterfaceDropdownList, InterfaceAddShop, InterfaceUpShop } from '@/api/system'
 import MapSelector from '@/components/common/map-selector/MapSelector'
 export default {
   components: {
@@ -296,9 +234,9 @@ export default {
         parentId: '',
         state: ''
       },
-      sjdh: [],
+      // sjdh: [],
       sdfswfsdd: [],
-      djjgierig: [],
+      // djjgierig: [],
       options: [
         { value: '', label: '全部' },
         { value: '0', label: '门店配送' },
@@ -310,7 +248,7 @@ export default {
   },
   mounted () {
     this.getlist()
-    this.getType()
+    // this.getType()
     this.sgeugb()
   },
   methods: {
@@ -355,27 +293,28 @@ export default {
       this.form.latitude = val.location.lat
     },
     // 获取下拉列表所属网点选项
-    getType () {
-      InterfaceDropdownList({
-        type: 1
-      }).then(data => {
-        this.sjdh = data
-      })
-    },
+    // getType () {
+    //   InterfaceDropdownList({
+    //     type: 3
+    //   }).then(data => {
+    //     this.sjdh = data
+    //   })
+    // },
     sgeugb () {
       InterfaceDropdownList({
         type: 3
       }).then(data => {
         this.sdfswfsdd = data
+        // this.djjgierig = data
       })
     },
-    sjferg () {
-      InterfaceDropdownlastList({
-        parentId: this.dkjgbkebr
-      }).then(data => {
-        this.djjgierig = data
-      })
-    },
+    // sjferg () {
+    //   InterfaceDropdownlastList({
+    //     parentId: this.dkjgbkebr
+    //   }).then(data => {
+    //     this.djjgierig = data
+    //   })
+    // },
     // 分页
     handleSizeChange (val) {
       this.from.pageSize = val

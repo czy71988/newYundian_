@@ -16,7 +16,7 @@
             value="">
           </el-option>
           <el-option
-            v-for="item in djjgierig"
+            v-for="item in sdfswfsdd"
             :key="item.id"
             :label="item.title"
             :value="item.id">
@@ -181,7 +181,7 @@
 </template>
 
 <script>
-import { InterfaceShop, InterfaceDropdownList, InterfaceAddShop, InterfaceUpShop, InterfaceDropdownlastList } from '@/api/system'
+import { InterfaceShop, InterfaceDropdownList, InterfaceAddShop, InterfaceUpShop } from '@/api/system'
 import MapSelector from '@/components/common/map-selector/MapSelector'
 export default {
   components: {
@@ -224,9 +224,7 @@ export default {
         parentId: '',
         state: ''
       },
-      sjdh: [],
       sdfswfsdd: [],
-      djjgierig: [],
       options: [
         { value: '', label: '全部' },
         { value: '0', label: '门店配送' },
@@ -240,7 +238,6 @@ export default {
   },
   mounted () {
     this.getlist()
-    this.getType()
     this.sgeugb()
   },
   methods: {
@@ -287,13 +284,13 @@ export default {
       this.form.latitude = val.location.lat
     },
     // 获取下拉列表所属网点选项
-    getType () {
-      InterfaceDropdownList({
-        type: 1
-      }).then(data => {
-        this.sjdh = data
-      })
-    },
+    // getType () {
+    //   InterfaceDropdownList({
+    //     type: 1
+    //   }).then(data => {
+    //     this.sjdh = data
+    //   })
+    // },
     sgeugb () {
       InterfaceDropdownList({
         type: 3
@@ -301,13 +298,13 @@ export default {
         this.sdfswfsdd = data
       })
     },
-    sjferg () {
-      InterfaceDropdownlastList({
-        parentId: this.dkjgbkebr
-      }).then(data => {
-        this.djjgierig = data
-      })
-    },
+    // sjferg () {
+    //   InterfaceDropdownList({
+    //     parentId: this.dkjgbkebr
+    //   }).then(data => {
+    //     this.djjgierig = data
+    //   })
+    // },
     // 分页
     handleSizeChange (val) {
       this.from.pageSize = val

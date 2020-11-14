@@ -55,7 +55,57 @@ export function InterfaceUpShop (data, catchConfig) {
 export function InterfaceFinance (data, catchConfig) {
   const req = request({
     method: 'get',
+    url: '/youmi-fresh/admin/settle/getBusinessFinance',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 商家财务申请结算
+export function settlementstore (data, catchConfig) {
+  const req = request({
+    method: 'post',
+    url: '/youmi-fresh/admin/settle/applySettlement',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 商家财务申请列表
+export function SettlementListstore (data, catchConfig) {
+  const req = request({
+    method: 'get',
+    url: '/youmi-fresh/admin/settle/getBusinessApplyInfo',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 商家财务修改
+export function SettlementUpdate (data, catchConfig) {
+  const req = request({
+    method: 'post',
+    url: '/youmi-fresh/admin/settle/updateApplySettlement',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 门店、网点、中心收益信息
+export function SettlementStoreRevenue (data, catchConfig) {
+  const req = request({
+    method: 'get',
     url: '/youmi-fresh/admin/settle/queryProfitInfo',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 分佣信息
+export function SubCommissionInformation (data, catchConfig) {
+  const req = request({
+    method: 'get',
+    url: '/youmi-fresh/admin/settle/querySettingPro',
     data
   }, catchConfig)
   return req

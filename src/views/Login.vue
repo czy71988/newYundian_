@@ -38,7 +38,6 @@ export default {
   },
   methods: {
     login () {
-      // yundianLogin({}).then(data => {})
       this.$store.dispatch('login', this.form)
     },
     mokeOUt () {

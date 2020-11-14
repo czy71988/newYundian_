@@ -244,6 +244,7 @@
         </el-aside>
         <!-- 中间右侧部分 -->
         <el-main>
+          <p>{{shjf}}</p>
           <router-view/>
         </el-main>
       </el-container>
@@ -261,13 +262,33 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      index: ''
+      index: '',
+      shjf: ''
     }
   },
   computed: {
     ...mapState(['role'])
   },
+  mounted () {
+    this.shdfigrfiu()
+  },
   methods: {
+    shdfigrfiu () {
+      const skjdfj = sessionStorage.getItem('uers')
+      // console.log(skjdfj)
+      if (skjdfj === '12345678901') {
+        this.shjf = '商家账号'
+      } else if (skjdfj === '12345678902') {
+        this.shjf = '中心仓账号'
+      } else if (skjdfj === '12345678903') {
+        this.shjf = '网点账号'
+      } else if (skjdfj === '12345678904') {
+        this.shjf = '门店账号'
+      } else {
+        this.shjf = '运营账号'
+      }
+      // if (skjdfj === ) {}
+    },
     handleOpen (key, keyPath) {
       this.index = key
       console.log(this.index)

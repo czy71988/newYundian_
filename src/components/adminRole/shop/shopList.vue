@@ -47,23 +47,23 @@
               <img class="sdfsgerg" :src="scope.row.mainPic" alt="">
             </template>
           </el-table-column>
+          <!-- <el-table-column
+            align="center"
+            label="商品详情图">
+            <template slot-scope="scope">
+              <span
+               @click="DetailedDrawing(scope.row.id)">点击查看详情图</span>
+              <el-image
+                style="width: 100px; height: 100px"
+                :src="dialogImageUrl[0]"
+                :preview-src-list="dialogImageUrl">
+              </el-image>
+            </template>
+          </el-table-column> -->
           <el-table-column
             prop="title"
             align="center"
             label="商品标题">
-          </el-table-column>
-          <!-- <el-table-column
-            prop="label"
-            align="center"
-            label="商品标签">
-          </el-table-column> -->
-          <el-table-column
-            prop="storeHouse"
-            align="center"
-            label="所在仓位置">
-            <template slot-scope="scope">
-              <span>{{scope.row.storeHouse === 1 ? '门店' : (scope.row.storeHouse === 2 ? '中心仓库' : '')}}</span>
-            </template>
           </el-table-column>
           <el-table-column
             prop="price"
@@ -76,7 +76,7 @@
             label="商品类目">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="submitAmount"
             align="center"
             label="库存数量">
           </el-table-column>
@@ -86,13 +86,24 @@
             label="商品重量">
           </el-table-column>
           <el-table-column
+            prop="weight"
             align="center"
-            label="操作"
-            width="300">
+            label="操作">
+            <template slot-scope="scope">
+              <span style="color: #4A4AFF" v-if="scope.row.examine !== 1" @click="Mokeexamine">{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
+              <span style="color: #8E8E8E" v-else>{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="amount"
+            align="center"
+            label="入仓数量">
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="加入商品库">
             <template slot-scope="scope">
               <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
-              <span class="Banner_span3" @click="chakanxiangqing(scope.row)"><i class="el-icon-zoom-in"></i>查看详情</span>
-              <span :class="scope.row.state !== 1 ? 'Banner_span2' : 'Banner_span22'" @click="xiajia(scope.row)"><i class="el-icon-sort"></i>{{scope.row.state !== 1 ? '上架' : '下架'}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -100,7 +111,7 @@
     </div>
     <!-- 分页 -->
     <div class="bottom_bottom">
-      <div @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加商品</div>
+      <!-- <div @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加商品</div> -->
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
@@ -113,42 +124,32 @@
       </div>
     </div>
     <!-- 弹窗部分 -- 查看详情 -->
-    <div class="BanNer_diagio">
+    <el-dialog
+        width="20%"
+        :visible.sync="outerVisible">
       <el-dialog
-        :visible.sync="dialogVisiblessss">
-        <p class="sdsd">查看详情</p>
-        <div class="chuangjian_dialog">
-          <div class="gialog_tu">
-            <span>主图：</span>
-            <ul>
-              <li>
-                <big-img v-if="showImg" @clickit="viewImg" :imgSrc="imgSrc"></big-img>
-                <img  id="smallImg" :src="list.mainPic" alt="" @click="clickImg($event)">
-              </li>
-            </ul>
-            <span>详情图：</span>
-            <ul>
-              <li v-for="item in list.imageContent" :key="item.sort">
-                <big-img v-if="showImgq" @clickit="viewImg1" :imgSrc="imgSrc1"></big-img>
-                <img :src="item.imageUrl" alt="" @click="clickImg1($event)">
-              </li>
-            </ul>
-            <p>
-              <span>销售价：<div>{{list.price}}</div></span>
-            </p>
-            <p>
-              <span>库存数量：<div>{{list.amount}}</div></span>
-            </p>
-          </div>
+        width="30%"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <span>选择接收数量</span>
+        <el-input v-model="amount" placeholder="请输入内容"></el-input>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="innerVisible = false">取消</el-button>
+          <el-button type="primary" @click="Mokeexamineout">确定</el-button>
         </div>
       </el-dialog>
-    </div>
+      <span>是否通过该商品的审核</span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="OUtexamineout">否</el-button>
+        <el-button type="primary" @click="innerVisible = true">是</el-button>
+      </div>
+    </el-dialog>
     <!-- 弹窗部分 -- 商品创建编辑 -->
     <div class="BanNer_diagio">
       <el-dialog
         :before-close="jdhigjheirg"
         :visible.sync="shopShow">
-        <p class="sdsd">{{biaotiname}}</p>
+        <p class="sdsd">编辑商品入库</p>
         <div class="chuangjian_shop_dialog">
           <el-form ref="form" :model="form" label-width="100px">
             <el-form-item label="商品标题：">
@@ -183,7 +184,7 @@
                 <img width="100%" :src="dialogImageUrl.url" alt="">
               </el-dialog>
             </el-form-item>
-            <el-form-item label="所在仓位置：">
+            <!-- <el-form-item label="所在仓位置：">
               <el-select v-model="form.storeHouse" placeholder="请选择活动区域">
                 <el-option
                   v-for="item in fghty"
@@ -192,7 +193,7 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="所属类目：">
               <el-select v-model="form.categoryId" placeholder="请选择活动区域">
                 <el-option
@@ -207,7 +208,7 @@
               <el-input v-model="form.price"></el-input>
             </el-form-item>
             <el-form-item label="库存数量：">
-              <el-input v-model="form.amount"></el-input>
+              <el-input v-model="form.submitAmount"></el-input>
             </el-form-item>
             <el-form-item label="商品重量：">
               <el-input v-model="form.weight"></el-input>
@@ -224,8 +225,8 @@
 </template>
 
 <script>
-import BigImg from '../../common/map-selector/BigImg'
-import { InterfaceAddshopdetails, InterfaceshopSohp, InterfaceGoodsShelves, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle } from '@/api/shop'
+// import BigImg from '../../common/map-selector/BigImg'
+import { InterfaceshopSohp, InterfaceGoodsShelves, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle, InterfaceGoodsExamine } from '@/api/shop'
 import { deleteElementByValue } from '@/utils/khg'
 export default {
   data () {
@@ -237,9 +238,9 @@ export default {
       deleteElementByValue,
       tableData: [],
       dialogVisible: false,
-      dialogVisiblessss: false,
+      outerVisible: false,
+      innerVisible: false,
       shopShow: false,
-      biaotiname: '',
       currentPage1: 1,
       sdbgg: '',
       imageUrl: '',
@@ -252,7 +253,7 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        submitAmount: '',
         weight: ''
       },
       // 请求列表参数
@@ -273,11 +274,12 @@ export default {
       urls: [],
       total: 0,
       list: '',
-      ShopStyle: []
+      ShopStyle: [],
+      amount: ''
     }
   },
   props: ['pagedata'],
-  components: { 'big-img': BigImg },
+  // components: { 'big-img': BigImg },
   mounted () {
     this.getStyle()
     this.getlist()
@@ -287,6 +289,30 @@ export default {
       this.showImg = true
       // 获取当前图片地址
       this.imgSrc = e.currentTarget.src
+    },
+    // 商品审核
+    Mokeexamine () {
+      this.outerVisible = !this.outerVisible
+    },
+    Mokeexamineout () {
+      InterfaceGoodsExamine({
+        examine: 1,
+        amount: this.amount
+      }).then(data => {
+        this.$message('审核通过')
+        this.getlist()
+        this.outerVisible = !this.outerVisible
+        this.innerVisible = !this.innerVisible
+      })
+    },
+    OUtexamineout () {
+      InterfaceGoodsExamine({
+        examine: 2
+      }).then(data => {
+        this.$message('已拒绝')
+        this.outerVisible = !this.outerVisible
+        this.getlist()
+      })
     },
     clickImg1 (e) {
       this.showImgq = true
@@ -309,7 +335,7 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        submitAmount: '',
         weight: ''
       }
       this.urls = []
@@ -334,33 +360,26 @@ export default {
       })
     },
 
+    // 点击获取商品详情图
+    DetailedDrawing (id) {
+      console.log('dainji ')
+      Interfaceshopdetails({
+        id: id
+      }).then(data => {
+        this.form = data
+        this.imageUrl = data.mainPic
+        data.imageContent.forEach(item => { item.url = item.imageUrl })
+        this.dialogImageUrl = data.imageContent
+      })
+    },
+
     // 搜索操作
     sousuo () {
       this.getlist()
     },
 
-    // 查看详情
-    chakanxiangqing (row) {
-      const id = row.id
-      Interfaceshopdetails({
-        id: id
-      }).then(data => {
-        this.list = data
-        this.dialogVisiblessss = !this.dialogVisiblessss
-        this.shopShow = false
-      })
-    },
-
-    // 添加商品
-    chuanjianshagpin () {
-      this.shopShow = !this.shopShow
-      this.biaotiname = '创建商品'
-      this.sdbgg = '添加'
-    },
-
     // 商品编辑
     bianji (item) {
-      this.biaotiname = '商品编辑'
       this.sdbgg = '确定'
       const id = item.id
       this.jdhigjheirg()
@@ -386,29 +405,15 @@ export default {
 
     // 添加按钮
     onSubmit () {
-      if (this.biaotiname === '创建商品') {
-        this.urls.forEach((item, index) => {
-          this.form.imageContent.push({ sort: index, imageUrl: item.imageUrl })
+      // 编辑操作
+      InterfaceGoodsUpdate(this.form).then(data => {
+        this.$message({
+          message: '修改商品成功',
+          type: 'success'
         })
-        InterfaceAddshopdetails(this.form).then(data => {
-          this.$message({
-            message: '创建商品成功',
-            type: 'success'
-          })
-          this.getlist()
-          this.jdhigjheirg()
-        })
-      } else {
-        // 编辑操作
-        InterfaceGoodsUpdate(this.form).then(data => {
-          this.$message({
-            message: '修改商品成功',
-            type: 'success'
-          })
-          this.getlist()
-          this.jdhigjheirg()
-        })
-      }
+        this.getlist()
+        this.jdhigjheirg()
+      })
     },
 
     // 图片上传
@@ -499,6 +504,16 @@ export default {
         color: #FFFFFF;
         td {
           padding: 0;
+          position: relative;
+          .el-image {
+            opacity: 0;
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            // left: 50%;
+          }
         }
         tr {
           color: #333333;
