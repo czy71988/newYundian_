@@ -8,15 +8,16 @@
 
     <div class="top">
       <el-date-picker
-        v-model="value1"
+        v-model="dateRange"
         type="daterange"
+        @change="onDateRangeChange"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期">
       </el-date-picker>
-      <el-input class="input" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button type="primary" plain>搜索</el-button>
-      <el-button type="info" plain>重置</el-button>
+      <el-input class="input" v-model="form.orderId" placeholder="请输入订单号"></el-input>
+      <el-button type="primary" plain @click="onSearch">搜索</el-button>
+      <el-button type="info" plain @click="onReset">重置</el-button>
       <el-button type="success" plain>导出</el-button>
     </div>
 
@@ -40,11 +41,11 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="readPay"
+            prop="realPay"
             align="center"
             label="实付金额">
             <template slot-scope="scope">
-              <span>{{scope.row.readPay}}</span>
+              <span>{{scope.row.realPay}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -57,7 +58,7 @@
             align="center"
             label="订单状态">
             <template slot-scope="scope">
-              <span>{{scope.row.orderStatus}}</span>
+              <span>{{scope.row.orderStatus | orderStatusFilter}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -95,31 +96,50 @@
     <div class="shopType_diagio">
       <el-dialog
         :visible.sync="shopShow">
-        <div class="uers_dialog">
-          <div>
-            <ul class="uers_log">
-              <li>商品ID</li>
-              <li>图片</li>
-              <li>名称</li>
-              <li>类目</li>
-              <li>价格</li>
-              <li>数量</li>
-              <li>重量</li>
-              <li>标签</li>
-            </ul>
-            <ul class="uers_logs">
-              <li v-for="item in shopxContent" :key="item.id">
-                <span>1</span>
-                <span><img src="@/assets/微信图片_20201016132405.jpg" alt=""></span>
-                <span>可视对讲你哥哥</span>
-                <span>酒水</span>
-                <span>89</span>
-                <span>2000</span>
-                <span>200</span>
-                <span>当日达</span>
-              </li>
-            </ul>
-          </div>
+        <div class="display-table">
+          <el-table
+            :data="goodsList"
+            stripe
+            style="width: 100%">
+            <el-table-column
+              prop="itemId"
+              align="center"
+              label="商品ID">
+            </el-table-column>
+            <el-table-column
+              prop="itemImg"
+              align="center"
+              label="图片">
+              <template slot-scope="{row}">
+                <img style="width:100px;height:100px" :src="row.itemImg" alt="">
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="itemTitle"
+              align="center"
+              label="名称">
+            </el-table-column>
+            <el-table-column
+              prop="originalPrice"
+              align="center"
+              label="价格">
+            </el-table-column>
+            <el-table-column
+              prop="itemNum"
+              align="center"
+              label="数量">
+            </el-table-column>
+            <el-table-column
+              prop="weight"
+              align="center"
+              label="重量">
+            </el-table-column>
+            <el-table-column
+              prop="label"
+              align="center"
+              label="标签">
+            </el-table-column>
+          </el-table>
         </div>
       </el-dialog>
     </div>
@@ -129,18 +149,35 @@
 <script>
 import { InterfaceOrderList } from '@/api/order'
 import { formatOrder } from '@/utils/format'
+const getDefaultSearchForm = () => {
+  return {
+    orderType: 2,
+    logisticsType: 2,
+    pageNo: 1,
+    pageSize: 2,
+    beginCreTime: '',
+    endCreTime: '',
+    orderId: ''
+  }
+}
 export default {
+  filters: {
+    orderStatusFilter (val, logisticsType) {
+      if (val === 1) return '待付款'
+      if (val === 2) return '待收货'
+      if (val === 3) return logisticsType === 1 ? '已取货' : '已送达'
+      if (val === 4) return '取消订单'
+    }
+  },
   data () {
     return {
       shopxContent: [],
       list: [],
-      form: {
-        orderType: 2,
-        logisticsType: 2,
-        pageNo: 1,
-        pageSize: 20
-      },
-      total: 0
+      form: getDefaultSearchForm(),
+      total: 0,
+      shopShow: false,
+      dateRange: '',
+      goodsList: []
     }
   },
   created () {
@@ -149,7 +186,10 @@ export default {
   methods: {
     // 分页
     handleSizeChange (val) {},
-    handleCurrentChange (val) {},
+    handleCurrentChange (val) {
+      this.form.pageNo = val
+      this.getOrderList()
+    },
     getOrderList () {
       const form = this.form
       const { pageNo } = form
@@ -160,11 +200,38 @@ export default {
             this.total = 0
           }
         }
+        if (pageNo === 1 && list[0]) {
+          this.total = list[0].totalCount
+        }
         list = list.map(item => {
           return formatOrder(item)
         })
-        this.list = pageNo === 1 ? list : [...this.list, ...list]
+        this.list = list
       })
+    },
+    onDateRangeChange (dateRange) {
+      if (dateRange) {
+        let [startDate, endDate] = dateRange
+        endDate = new Date(`${endDate.getFullYear()}/${endDate.getMonth() + 1}/${endDate.getDate() + 1}`)
+        this.form.beginCreTime = startDate.getTime()
+        this.form.endCreTime = endDate.getTime()
+      } else {
+        this.form.beginCreTime = ''
+        this.form.endCreTime = ''
+      }
+    },
+    onSearch () {
+      this.form.pageNo = 1
+      this.getOrderList()
+    },
+    onReset () {
+      this.form = getDefaultSearchForm()
+      this.dateRange = ''
+      this.getOrderList()
+    },
+    bianji (row) {
+      this.goodsList = row.goodsList
+      this.shopShow = !this.shopShow
     }
   }
 }
@@ -212,6 +279,7 @@ export default {
       .el-dialog {
         width: 500px;
         // height: 430px;
+        width: 80%;
         background: #FFFFFF;
         border-radius: 8px;
         .el-dialog__header {
@@ -341,6 +409,7 @@ export default {
     .shopType_diagio {
       .uers_dialog {
         padding: 10px;
+        width: 100%;
         box-sizing: border-box;
         div {
           .uers_log {

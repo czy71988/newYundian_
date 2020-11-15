@@ -9,6 +9,7 @@
     <div class="shopType_home_top">
       <ul style="margin-bottom:0px">
         <li>
+
           <p>{{profitInfo.pickedNum || 0}}</p>
           <p>待取货</p>
         </li>
@@ -23,14 +24,45 @@
       </ul>
       <ul>
         <li>
+           <el-select
+            class="options" v-model="profitForm.today" placeholder="请选择"
+              @change="onDateChange('day')">
+            <el-option
+              v-for="item in days"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
           <p>{{profitInfo.todayPrice || 0}}</p>
           <p>今日收益</p>
+
         </li>
         <li>
+          <el-select
+            class="options" v-model="profitForm.month" placeholder="请选择"
+              @change="onDateChange('month')">
+            <el-option
+              v-for="item in months"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
           <p>{{profitInfo.monthPrice || 0}}</p>
           <p>本月收益</p>
         </li>
         <li>
+          <el-select
+            class="options" v-model="profitForm.year" placeholder="请选择"
+              @change="onDateChange('year')">
+            <el-option
+              v-for="item in years"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
           <p>{{profitInfo.yearPrice || 0}}</p>
           <p>今年收益</p>
         </li>
@@ -70,6 +102,9 @@
             prop="receiverFullAddress"
             align="center"
             label="收货地址">
+            <template slot-scope="{row}">
+              <span>{{row.logisticsType === 1 ? '暂无' : row.receiverFullAddress}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             align="center"
@@ -83,15 +118,16 @@
             align="center"
             label="状态">
             <template slot-scope="scope">
-              <span>{{scope.row.orderStatus}}</span>
+              <span>{{scope.row.orderStatus | orderStatusFilter(scope.row.logisticsType)}}</span>
             </template>
           </el-table-column>
           <el-table-column
             align="center"
             label="操作"
             width="100">
-            <template slot-scope="scope">
-              <span @click="caozuo(scope)">已取走</span>
+            <template slot-scope="{row}">
+              <el-button type="primary" size="mini" v-if="row.orderStatus === 2" @click="caozuo(row)">{{row.logisticsType === 1 ? '已取走' : '已送达'}}</el-button>
+              <span v-else>--</span>
             </template>
           </el-table-column>
         </el-table>
@@ -129,14 +165,14 @@
               <li>标签</li>
             </ul>
             <ul class="uers_logs">
-              <li>
-                <span>1</span>
-                <span><img src="@/assets/微信图片_20201016132405.jpg" alt=""></span>
-                <span>可视对讲你哥哥</span>
-                <span>78</span>
-                <span>2000</span>
-                <span>200</span>
-                <span>当日达</span>
+             <li v-for="goods in goodsList" :key="goods.item">
+                <span>{{goods.itemId}}</span>
+                <span><img :src="goods.itemImg" alt=""></span>
+                <span>{{goods.itemTitle}}</span>
+                <span>{{goods.originalPrice}}</span>
+                <span>{{goods.itemNum}}</span>
+                <span>{{goods.weight}}</span>
+                <span>{{goods.label}}</span>
               </li>
             </ul>
           </div>
@@ -162,12 +198,56 @@ const getTodyDate = () => {
     year: now.getFullYear()
   }
 }
+
+const getYears = () => {
+  const date = new Date()
+  const year = date.getFullYear()
+  const years = []
+  const len = 60
+  for (let i = 0; i <= len; i++) {
+    years.push({
+      value: year - i,
+      label: `${year - i}年`
+    })
+  }
+  return years
+}
 const todyDate = getTodyDate()
+const getMonths = () => {
+  const months = []
+  const len = 12
+  for (let i = 1; i <= len; i++) {
+    months.push({
+      value: i,
+      label: `${i}月`
+    })
+  }
+  return months
+}
+const getDays = (year, month) => {
+  const date = new Date(year, month, 0)
+  const days = []
+  const len = date.getDate()
+  for (let i = 1; i <= len; i++) {
+    days.push({
+      value: i,
+      label: `${i}日`
+    })
+  }
+  return days
+}
+
 export default {
   filters: {
     logisticsTypeFilter (val) {
       if (!val) return '--'
-      return val === 1 ? '自提订单' : '配送订单'
+      return val === 1 ? '自取订单' : '配送订单'
+    },
+    orderStatusFilter (val, logisticsType) {
+      if (val === 1) return '待付款'
+      if (val === 2) return '待收货'
+      if (val === 3) return logisticsType === 1 ? '已取货' : '已送达'
+      if (val === 4) return '取消订单'
     }
   },
   data () {
@@ -177,28 +257,47 @@ export default {
       shopxContent: [],
       list: [],
       total: 0,
+      goodsList: [],
       form: {
         orderType: 2,
         beginCreTime: todyDate.start,
         endCreTime: todyDate.end,
         pageNo: 1,
-        pageSize: 20
+        pageSize: 3
       },
       profitForm: {
         today: todyDate.today,
         month: todyDate.month,
         year: todyDate.year
       },
-      profitInfo: {}
+      profitInfo: {},
+      years: getYears(),
+      months: getMonths(),
+      days: getDays(todyDate.year, todyDate.month)
     }
   },
   created () {
     this.getOrderList()
     this.getProfitInfo()
+    console.log(this.days)
   },
   mounted () {
   },
   methods: {
+    // 重新获取收益
+    onDateChange (type) {
+      const { year, month, today } = this.profitForm
+      if (type === 'year' || type === 'month') {
+        // 重新获取日选项
+        const days = getDays(year, month)
+        console.log(days)
+        const maxDay = days[days.length - 1].value
+        if (today > maxDay) {
+          this.profitForm.today = maxDay
+        }
+      }
+      this.getProfitInfo()
+    },
     getOrderList () {
       const form = this.form
       const { pageNo } = form
@@ -209,10 +308,13 @@ export default {
             this.total = 0
           }
         }
+        if (pageNo === 1 && list[0]) {
+          this.total = list[0].totalCount
+        }
         list = list.map(item => {
           return formatOrder(item)
         })
-        this.list = pageNo === 1 ? list : [...this.list, ...list]
+        this.list = list
       })
     },
     // 获取收益信息
@@ -229,11 +331,26 @@ export default {
     },
     handleCurrentChange (val) {
       console.log(val)
+      this.form.pageNo = val
+      this.getOrderList()
     },
     // 操作按钮
-    caozuo () {},
+    caozuo (row) {
+      const label = `是否确定${row.logisticsType === 1 ? '已取走' : '已收货'}`
+      this.$confirm(label)
+        .then(() => {
+          this.updateOrderStatus(row)
+        })
+        .catch(() => {
+          console.log('reject')
+        })
+    },
+    updateOrderStatus (row) {
+
+    },
     // 查看按钮
-    moke () {
+    moke (row) {
+      this.goodsList = row.goodsList
       this.shopShow = !this.shopShow
     }
   }
@@ -354,6 +471,12 @@ export default {
       }
     }
     .shopType_home_top {
+      .options {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 100px;
+      }
       ul {
         width: 100%;
         height: 100px;
@@ -362,6 +485,7 @@ export default {
         margin-bottom: 20px;
         background: linear-gradient(249deg, rgba(255, 255, 255, 0.11) 0%, #164C92 100%);
         li {
+          position: relative;
           flex: 1;
           text-align: center;
           color: #e3e3e3;

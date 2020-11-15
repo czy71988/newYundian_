@@ -8,15 +8,16 @@
 
     <div class="top">
       <el-date-picker
-        v-model="value1"
+        v-model="dateRange"
         type="daterange"
+        @change="onDateRangeChange"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期">
       </el-date-picker>
-      <el-input class="input" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button type="primary" plain>搜索</el-button>
-      <el-button type="info" plain>重置</el-button>
+      <el-input class="input" v-model="form.orderId" placeholder="请输入订单号"></el-input>
+      <el-button type="primary" plain @click="onSearch">搜索</el-button>
+      <el-button type="info" plain @click="onReset">重置</el-button>
       <el-button type="success" plain>导出</el-button>
     </div>
 
@@ -36,7 +37,7 @@
             align="center"
             label="操作时间">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate | dateFilter('yyyy:MM:dd hh:mm:ss')}}</span>
+              <span>{{scope.row.gmtCreate | dateFilter('yyyy/MM/dd hh:mm:ss')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -64,7 +65,7 @@
             label="查看详情"
             width="100">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
+              <span class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>订单详情</span>
             </template>
           </el-table-column>
         </el-table>
@@ -83,23 +84,83 @@
         </el-pagination>
       </div>
     </div>
+    <!-- 弹窗部分 -- 商品创建编辑 -->
+    <div class="shopType_diagio">
+      <el-dialog
+        :visible.sync="shopShow">
+        <div class="display-table">
+          <el-table
+            :data="goodsList"
+            stripe
+            style="width: 100%">
+            <el-table-column
+              prop="itemId"
+              align="center"
+              label="商品ID">
+            </el-table-column>
+            <el-table-column
+              prop="itemImg"
+              align="center"
+              label="图片">
+              <template slot-scope="{row}">
+                <img style="width:100px;height:100px" :src="row.itemImg" alt="">
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="itemTitle"
+              align="center"
+              label="名称">
+            </el-table-column>
+            <el-table-column
+              prop="originalPrice"
+              align="center"
+              label="价格">
+            </el-table-column>
+            <el-table-column
+              prop="itemNum"
+              align="center"
+              label="数量">
+            </el-table-column>
+            <el-table-column
+              prop="weight"
+              align="center"
+              label="重量">
+            </el-table-column>
+            <el-table-column
+              prop="label"
+              align="center"
+              label="标签">
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
 import { InterfaceOrderList } from '@/api/order'
 import { formatOrder } from '@/utils/format'
+const getDefaultSearchForm = () => {
+  return {
+    orderType: 3,
+    pageNo: 1,
+    pageSize: 2,
+    beginCreTime: '',
+    endCreTime: '',
+    orderId: ''
+  }
+}
 export default {
   data () {
     return {
       shopxContent: [],
       list: [],
-      form: {
-        orderType: 3,
-        pageNo: 1,
-        pageSize: 20
-      },
-      total: 0
+      form: getDefaultSearchForm(),
+      total: 0,
+      shopShow: false,
+      dateRange: '',
+      goodsList: []
     }
   },
   created () {
@@ -108,7 +169,10 @@ export default {
   methods: {
     // 分页
     handleSizeChange (val) {},
-    handleCurrentChange (val) {},
+    handleCurrentChange (val) {
+      this.form.pageNo = val
+      this.getOrderList()
+    },
     getOrderList () {
       const form = this.form
       const { pageNo } = form
@@ -119,11 +183,38 @@ export default {
             this.total = 0
           }
         }
+        if (pageNo === 1 && list[0]) {
+          this.total = list[0].totalCount
+        }
         list = list.map(item => {
           return formatOrder(item)
         })
-        this.list = pageNo === 1 ? list : [...this.list, ...list]
+        this.list = list
       })
+    },
+    onDateRangeChange (dateRange) {
+      if (dateRange) {
+        let [startDate, endDate] = dateRange
+        endDate = new Date(`${endDate.getFullYear()}/${endDate.getMonth() + 1}/${endDate.getDate() + 1}`)
+        this.form.beginCreTime = startDate.getTime()
+        this.form.endCreTime = endDate.getTime()
+      } else {
+        this.form.beginCreTime = ''
+        this.form.endCreTime = ''
+      }
+    },
+    onSearch () {
+      this.form.pageNo = 1
+      this.getOrderList()
+    },
+    onReset () {
+      this.form = getDefaultSearchForm()
+      this.dateRange = ''
+      this.getOrderList()
+    },
+    bianji (row) {
+      this.goodsList = row.goodsList
+      this.shopShow = !this.shopShow
     }
   }
 }
