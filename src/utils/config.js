@@ -9,13 +9,16 @@ if (process.env.NODE_ENV !== 'development') {
 }
 const reqConfigMap = {
   dev: {
-    baseUrl: ''
+    baseUrl: '',
+    uploadUrl: 'https://test.zk020.cn/bee-admin/admin/systemIndex/doUploadFile'
   },
   pre: {
-    baseUrl: 'https://test.zk020.cn'
+    baseUrl: 'https://test.zk020.cn',
+    uploadUrl: 'https://test.zk020.cn/bee-admin/admin/systemIndex/doUploadFile'
   },
   pro: {
-    baseUrl: 'https://bee.zk020.cn'
+    baseUrl: 'https://bee.zk020.cn',
+    uploadUrl: 'https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile'
   }
 }
 export const reqConfig = reqConfigMap[env]

@@ -14,6 +14,10 @@
           <div class="shgfhir" slot="append" @click="mokeOUt">{{btntxt}}</div>
         </span>
       </div>
+      <div class="row">
+        <div>登录即同意服务条款</div>
+        <div @click="onGoReg"><span class="link-wrap">商家用户请先</span><span class="link">注册</span></div>
+      </div>
       <div class="Login_btn">
         <span @click="login">登录</span>
       </div>
@@ -24,21 +28,27 @@
 
 <script>
 import { yundianmoke } from '../api/login'
+
 export default {
   data () {
     return {
       form: {
-        phone: '',
-        identifyCode: ''
+        phone: '11111111111',
+        identifyCode: '123456'
       },
       btntxt: '获取验证码',
       time: '',
       disabled: false
     }
   },
+  created () {
+  },
   methods: {
     login () {
       this.$store.dispatch('login', this.form)
+    },
+    onGoReg () {
+      this.$router.push({ path: '/reg' })
     },
     mokeOUt () {
       if (this.form.phone !== '' && this.disabled === false) {
@@ -70,6 +80,19 @@ export default {
 
 <style lang="less">
   .Login {
+    .row {
+      display: flex;
+      // justify-content: space-between;
+      box-sizing: border-box;
+      .link {
+        &-wrap {
+          margin-left: 276px;
+        }
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+      }
+    }
     .Login_div {
       div {
         span {

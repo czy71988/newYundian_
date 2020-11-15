@@ -110,3 +110,12 @@ export function SubCommissionInformation (data, catchConfig) {
   }, catchConfig)
   return req
 }
+// 获取门店首页收益营业额信息
+export function getStoreProfitInfo (data, catchConfig) {
+  const req = request({
+    method: 'get',
+    url: '/youmi-fresh/admin/settle/queryShopFirstInfo',
+    data
+  }, catchConfig)
+  return req
+}

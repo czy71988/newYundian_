@@ -2,17 +2,23 @@
   <div class="shopList">
     <!-- 头部部分 -->
     <div class="BanNer_top">
-      <p>· 商品管理  商品列表</p>
+      <p>· 商品管理  商家商品审核</p>
       <!-- <div @click="chuangjian">创建Banner</div> -->
       <div class="BanNer_top_p">
-        <span>商品编号：</span>
-        <el-input v-model="getform.itemId" placeholder="请输入商品编号"></el-input>
         <span>商品标题：</span>
-        <el-input v-model="getform.title" placeholder="请输入商品标题"></el-input>
+        <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
+        <span>商品标签：</span>
+        <el-select v-model="getform.label" placeholder="请选择">
+          <el-option
+            v-for="item in dfgsdf"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <div>
-          <el-button type="primary" round  @click="sousuo">搜索</el-button>
-          <el-button type="info" round @click="onReset">重置</el-button>
-          <el-button type="warning" round>导出</el-button>
+          <span @click="sousuo">搜索</span>
+          <span>批量导出</span>
         </div>
       </div>
     </div>
@@ -38,26 +44,20 @@
             label="主图">
             <template slot-scope="scope">
             <!-- <template> -->
-            <el-image
-              style="width: 100px; height: 100px"
-              :src="scope.row.mainPic"
-              :preview-src-list="[scope.row.mainPic]">
-            </el-image>
-              <!-- <img class="sdfsgerg" :src="scope.row.mainPic" alt=""> -->
+              <img class="sdfsgerg" :src="scope.row.mainPic" alt="">
             </template>
           </el-table-column>
           <!-- <el-table-column
-            prop="storeHouse"
             align="center"
             label="商品详情图">
             <template slot-scope="scope">
+              <span
+               @click="DetailedDrawing(scope.row.id)">点击查看详情图</span>
               <el-image
-                v-if="xiangqingtu.length > 0"
                 style="width: 100px; height: 100px"
-                :src="xiangqingtu[0]"
-                :preview-src-list="xiangqingtu">
+                :src="dialogImageUrl[0]"
+                :preview-src-list="dialogImageUrl">
               </el-image>
-              <span v-else @click="mokedetailsUrls(scope.row.id)">点击查看详情图</span>
             </template>
           </el-table-column> -->
           <el-table-column
@@ -65,20 +65,20 @@
             align="center"
             label="商品标题">
           </el-table-column>
-          <!-- <el-table-column
-            prop="gmtCreate"
-            align="center"
-            label="上传时间">
-          </el-table-column> -->
-          <el-table-column
-            prop="categoryName"
-            align="center"
-            label="所属类目">
-          </el-table-column>
           <el-table-column
             prop="price"
             align="center"
             label="销售价">
+          </el-table-column>
+          <el-table-column
+            prop="categoryName"
+            align="center"
+            label="商品类目">
+          </el-table-column>
+          <el-table-column
+            prop="submitAmount"
+            align="center"
+            label="库存数量">
           </el-table-column>
           <el-table-column
             prop="weight"
@@ -86,14 +86,13 @@
             label="商品重量">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="weight"
             align="center"
-            label="库存数量">
-          </el-table-column>
-          <!-- <el-table-column
-            prop="amount"
-            align="center"
-            label="审核状态">
+            label="操作">
+            <template slot-scope="scope">
+              <span style="color: #4A4AFF" v-if="scope.row.examine !== 1" @click="Mokeexamine">{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
+              <span style="color: #8E8E8E" v-else>{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="amount"
@@ -101,15 +100,10 @@
             label="入仓数量">
           </el-table-column>
           <el-table-column
-            prop="amount"
             align="center"
-            label="销售数量">
-          </el-table-column> -->
-          <el-table-column
-            align="center"
-            label="操作">
+            label="加入商品库">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="onLookDetail(scope.row)"><i class="el-icon-edit"></i>查看详情</span>
+              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
             </template>
           </el-table-column>
         </el-table>
@@ -117,37 +111,58 @@
     </div>
     <!-- 分页 -->
     <div class="bottom_bottom">
+      <!-- <div @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加商品</div> -->
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="getform.pageNo"
-          :page-size="getform.pageSize"
+          :current-page.sync="currentPage1"
+          :page-size="10"
           layout="total, prev, pager, next"
           :total="total">
         </el-pagination>
       </div>
     </div>
-
+    <!-- 弹窗部分 -- 查看详情 -->
+    <el-dialog
+        width="20%"
+        :visible.sync="outerVisible">
+      <el-dialog
+        width="30%"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <span>选择接收数量</span>
+        <el-input v-model="amount" placeholder="请输入内容"></el-input>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="innerVisible = false">取消</el-button>
+          <el-button type="primary" @click="Mokeexamineout">确定</el-button>
+        </div>
+      </el-dialog>
+      <span>是否通过该商品的审核</span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="OUtexamineout">否</el-button>
+        <el-button type="primary" @click="innerVisible = true">是</el-button>
+      </div>
+    </el-dialog>
     <!-- 弹窗部分 -- 商品创建编辑 -->
     <div class="BanNer_diagio">
       <el-dialog
+        :before-close="jdhigjheirg"
         :visible.sync="shopShow">
-        <p class="sdsd">{{biaotiname}}</p>
+        <p class="sdsd">编辑商品入库</p>
         <div class="chuangjian_shop_dialog">
           <el-form ref="form" :model="form" label-width="100px">
             <el-form-item label="商品标题：">
-              <el-input v-model="form.title" disabled></el-input>
+              <el-input v-model="form.title"></el-input>
             </el-form-item>
             <el-form-item label="商品主图：">
               <el-upload
-                disabled
                 class="avatar-uploader"
                 action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="form.mainPic" :src="form.mainPic" class="avatar">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <div v-else class="avatar-uploader-icon">
                   <i class="el-icon-circle-plus-outline"></i><span class="sdhfhogerg" v-if="!imageUrl">点击或将图片拖拽到这里上传支持扩展名：png、jpg、jpeg</span>
                 </div>
@@ -155,27 +170,22 @@
             </el-form-item>
             <el-form-item label="详情图：">
               <el-upload
-                disabled
                 action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
                 list-type="picture-card"
-                :file-list="form.imgs"
-                show-file-list
+                :file-list="dialogImageUrl"
                 :on-preview="handlePictureCardPreview"
                 :on-success="dbfbiebibkfjbrgdfg"
                 :on-remove="handleRemove">
-                <!-- <div class="avatar-uploader-icon">
+                <div class="avatar-uploader-icon">
                   <i class="el-icon-circle-plus-outline"></i><span class="sdhfhogerg">点击或将图片拖拽到这里上传支持扩展名：png、jpg、jpeg</span>
-                </div> -->
+                </div>
               </el-upload>
-              <!-- <el-dialog :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt="">
-              </el-dialog> -->
-            </el-form-item>
-            <el-form-item label="销售价：">
-              <el-input v-model="form.price" disabled></el-input>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl.url" alt="">
+              </el-dialog>
             </el-form-item>
             <el-form-item label="所属类目：">
-              <el-select v-model="form.categoryId" placeholder="请选择活动区域" disabled>
+              <el-select v-model="form.categoryId" placeholder="请选择活动区域">
                 <el-option
                   v-for="item in ShopStyle"
                   :key="item.id"
@@ -184,57 +194,47 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="规格：">
-              <el-input v-model="form.weight" disabled></el-input>
+            <el-form-item label="销售价：">
+              <el-input v-model="form.price"></el-input>
             </el-form-item>
-            <el-form-item label="库存：">
-              <el-input v-model="form.amount" disabled></el-input>
+            <el-form-item label="库存数量：">
+              <el-input v-model="form.submitAmount"></el-input>
+            </el-form-item>
+            <el-form-item label="商品重量：">
+              <el-input v-model="form.weight"></el-input>
             </el-form-item>
             <el-form-item>
+              <el-button type="primary" @click="onSubmit">{{sdbgg}}</el-button>
               <el-button @click="jdhigjheirg">取消</el-button>
             </el-form-item>
           </el-form>
         </div>
       </el-dialog>
     </div>
-    <el-image-viewer
-      v-if="showViewer"
-      :on-close="closeViewer"
-      :url-list="dialogImageUrl" />
   </div>
 </template>
 
 <script>
-import ElImageViewer from 'element-ui/packages/image/src/image-viewer.vue'
-import { InterfaceshopSohp, Interfaceshopdetails, InterfaceGoodsStyle } from '@/api/shop'
+// import BigImg from '../../common/map-selector/BigImg'
+import { InterfaceshopSohp, InterfaceGoodsShelves, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle, InterfaceGoodsExamine } from '@/api/shop'
 import { deleteElementByValue } from '@/utils/khg'
-const getDefaultSearchForm = () => {
-  return {
-    pageNo: 1,
-    pageSize: 3,
-    title: '',
-    itemId: ''
-  }
-}
 export default {
-  components: {
-    ElImageViewer
-  },
   data () {
     return {
-      showViewer: false,
+      showImg: false,
+      showImgq: false,
       imgSrc: '',
       imgSrc1: '',
       deleteElementByValue,
       tableData: [],
       dialogVisible: false,
-      dialogVisiblessss: false,
+      outerVisible: false,
+      innerVisible: false,
       shopShow: false,
-      biaotiname: '',
       currentPage1: 1,
+      sdbgg: '',
       imageUrl: '',
       dialogImageUrl: [],
-      xiangqingtu: [],
       form: {
         title: '',
         mainPic: '', // 商品主图
@@ -243,15 +243,20 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        submitAmount: '',
         weight: ''
       },
       // 请求列表参数
-      getform: getDefaultSearchForm(),
+      getform: {
+        pageNo: '1',
+        pageSize: '10',
+        title: '',
+        label: '',
+        examine: true
+      },
       dfgsdf: [
-        { value: '0', label: '待审核' },
-        { value: '1', label: '审核通过' },
-        { value: '2', label: '审核拒绝' }
+        { value: '隔日达', label: '隔日达' },
+        { value: '当日达', label: '当日达' }
       ],
       fghty: [
         { value: '1', label: '门店' },
@@ -260,17 +265,57 @@ export default {
       urls: [],
       total: 0,
       list: '',
-      ShopStyle: []
+      ShopStyle: [],
+      amount: ''
     }
   },
   props: ['pagedata'],
-  created () {
-    this.getStyle()
-  },
+  // components: { 'big-img': BigImg },
   mounted () {
+    this.getStyle()
     this.getlist()
   },
   methods: {
+    clickImg (e) {
+      this.showImg = true
+      // 获取当前图片地址
+      this.imgSrc = e.currentTarget.src
+    },
+    // 商品审核
+    Mokeexamine () {
+      this.outerVisible = !this.outerVisible
+    },
+    Mokeexamineout () {
+      InterfaceGoodsExamine({
+        examine: 1,
+        amount: this.amount
+      }).then(data => {
+        this.$message('审核通过')
+        this.getlist()
+        this.outerVisible = !this.outerVisible
+        this.innerVisible = !this.innerVisible
+      })
+    },
+    OUtexamineout () {
+      InterfaceGoodsExamine({
+        examine: 2
+      }).then(data => {
+        this.$message('已拒绝')
+        this.outerVisible = !this.outerVisible
+        this.getlist()
+      })
+    },
+    clickImg1 (e) {
+      this.showImgq = true
+      // 获取当前图片地址
+      this.imgSrc1 = e.currentTarget.src
+    },
+    viewImg () {
+      this.showImg = false
+    },
+    viewImg1 () {
+      this.showImgq = false
+    },
     // dialog关闭回调
     jdhigjheirg () {
       this.form = {
@@ -281,7 +326,7 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        submitAmount: '',
         weight: ''
       }
       this.urls = []
@@ -294,40 +339,22 @@ export default {
     getStyle () {
       InterfaceGoodsStyle({}).then(data => {
         this.ShopStyle = data
-        console.log(data)
       })
     },
 
     // 获取列表
     getlist () {
+      console.log('jjjjj')
       InterfaceshopSohp(this.getform).then(data => {
-        console.log(data)
-        console.log(data.records)
+        console.log('列表', data)
         this.tableData = data.records
         this.total = data.total
       })
     },
-    onReset () {
-      this.getform = getDefaultSearchForm()
-      this.getlist()
-    },
-    // 搜索操作
-    sousuo () {
-      this.getform.pageNo = 1
-      this.getlist()
-    },
 
-    // 添加商品
-    // chuanjianshagpin () {
-    //   this.shopShow = !this.shopShow
-    //   this.biaotiname = '创建商品'
-    // },
-
-    // 商品编辑
-    bianji (item) {
-      this.biaotiname = '商品编辑'
-      const id = item.id
-      this.jdhigjheirg()
+    // 点击获取商品详情图
+    DetailedDrawing (id) {
+      console.log('dainji ')
       Interfaceshopdetails({
         id: id
       }).then(data => {
@@ -337,37 +364,24 @@ export default {
         this.dialogImageUrl = data.imageContent
       })
     },
-    // 查看商品详情
-    onLookDetail (item) {
-      this.jdhigjheirg()
-      this.biaotiname = '商品详情'
-      const goodsItem = Object.assign({}, item)
-      console.log({
-        name: '',
-        url: item.mainPic
-      })
-      goodsItem.imgs = [{
-        name: '1',
-        url: item.mainPic
-      }, {
-        name: '2',
-        url: item.mainPic
-      }]
-      this.form = goodsItem
-      this.shopShow = true
+
+    // 搜索操作
+    sousuo () {
+      this.getlist()
     },
-    mokedetailsUrls (id) {
-      this.xiangqingtu = []
+
+    // 商品编辑
+    bianji (item) {
+      this.sdbgg = '确定'
+      const id = item.id
+      this.jdhigjheirg()
       Interfaceshopdetails({
         id: id
       }).then(data => {
-        const img = data.imageContent
-        const arr = []
-        img.forEach(item => {
-          arr.push(item.imageUrl)
-        })
-        this.xiangqingtu = arr
-        console.log(this.xiangqingtu)
+        this.form = data
+        this.imageUrl = data.mainPic
+        data.imageContent.forEach(item => { item.url = item.imageUrl })
+        this.dialogImageUrl = data.imageContent
       })
     },
 
@@ -382,31 +396,17 @@ export default {
     },
 
     // 添加按钮
-    // onSubmit () {
-    //   if (this.biaotiname === '创建商品') {
-    //     this.urls.forEach((item, index) => {
-    //       this.form.imageContent.push({ sort: index, imageUrl: item.imageUrl })
-    //     })
-    //     InterfaceAddshopdetails(this.form).then(data => {
-    //       this.$message({
-    //         message: '创建商品成功',
-    //         type: 'success'
-    //       })
-    //       this.getlist()
-    //       this.jdhigjheirg()
-    //     })
-    //   } else {
-    //     // 编辑操作
-    //     InterfaceGoodsUpdate(this.form).then(data => {
-    //       this.$message({
-    //         message: '修改商品成功',
-    //         type: 'success'
-    //       })
-    //       this.getlist()
-    //       this.jdhigjheirg()
-    //     })
-    //   }
-    // },
+    onSubmit () {
+      // 编辑操作
+      InterfaceGoodsUpdate(this.form).then(data => {
+        this.$message({
+          message: '修改商品成功',
+          type: 'success'
+        })
+        this.getlist()
+        this.jdhigjheirg()
+      })
+    },
 
     // 图片上传
     handleAvatarSuccess (res, file) {
@@ -422,19 +422,43 @@ export default {
       const url = file.url
       this.form.imageContent = deleteElementByValue(this.form.imageContent, url)
     },
-    closeViewer () {
-      this.shopShow = true
-      this.showViewer = false
-    },
+
     handlePictureCardPreview (file) {
-      console.log(file)
-      this.dialogImageUrl = [file.url]
-      this.showViewer = true
-      this.shopShow = false
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
     },
 
     dbfbiebibkfjbrgdfg (res, file) {
       this.urls.push({ imageUrl: res.data })
+    },
+
+    // 上下架操作
+    xiajia (item) {
+      if (item.state === 1) {
+        // 下架操作
+        InterfaceGoodsShelves({
+          id: item.id,
+          state: 2
+        }).then(data => {
+          this.$message({
+            message: '下架成功',
+            type: 'success'
+          })
+          this.getlist()
+        })
+      } else {
+        // 上架操作
+        InterfaceGoodsShelves({
+          id: item.id,
+          state: 1
+        }).then(data => {
+          this.$message({
+            message: '上架成功',
+            type: 'success'
+          })
+          this.getlist()
+        })
+      }
     }
   }
 }
@@ -442,16 +466,6 @@ export default {
 
 <style lang="less">
   .shopList {
-    .el-upload-list  {
-      &.is-disabled {
-        .el-upload-list__item-status-label {
-          display: none;
-        }
-        & + .el-upload {
-          display: none;
-        }
-      }
-    }
     .BanNer_top_p {
       line-height: 20px;
       text-align: left;
@@ -482,6 +496,16 @@ export default {
         color: #FFFFFF;
         td {
           padding: 0;
+          position: relative;
+          .el-image {
+            opacity: 0;
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            // left: 50%;
+          }
         }
         tr {
           color: #333333;
@@ -555,7 +579,6 @@ export default {
               .el-form-item__content {
                 .el-input {
                   width: 200px;
-                  width: 267px;
                 }
               }
                .avatar-uploader {
@@ -672,17 +695,14 @@ export default {
       margin-top: 10px;
       .Banner_span1 {
         color: #2B80FD;
+        margin-right: 30px;
         font-size: 13px;
       }
-      .Banner_spanout {
-        color: #acacac;
-        font-size: 13px;
-      }
-      .out {
+      .Banner_span2 {
         color: #2B80FD;
         font-size: 13px;
       }
-      .out2 {
+      .Banner_span22 {
         color: #FF8C14;
         font-size: 13px;
       }
@@ -702,6 +722,45 @@ export default {
         text-align: left;
         padding: 20px;
         box-sizing: border-box;
+        .gialog_tu {
+          ul {
+            margin: auto;
+            li {
+              display: inline-block;
+              margin-right: 25px;
+              margin-bottom: 25px;
+              img {
+                width: 126px;
+                height: 78px;
+              }
+            }
+          }
+          p {
+            line-height: 40px;
+            span {
+              font-size: 13px;
+              font-family: MicrosoftYaHei-Bold, MicrosoftYaHei;
+              font-weight: bold;
+              color: #333333;
+              line-height: 17px;
+              div {
+                display: inline-block;
+                color: #666666;
+              }
+            }
+          }
+          span {
+            line-height: 40px;
+            display: inline-block;
+            width: 33.3%;
+            font-size: 13px;
+            font-family: MicrosoftYaHei-Bold, MicrosoftYaHei;
+            font-weight: bold;
+            color: #333333;
+          }
+        }
+        .chuangjian_shop_dialog {
+        }
       }
     }
     .bottom_bottom {
@@ -710,18 +769,18 @@ export default {
       background: #D7E5FB;
       border-radius: 0px 0px 6px 6px;
       box-sizing: border-box;
-      // .bottom_chuangjian {
-      //   display: inline-block;
-      //   font-size: 13px;
-      //   font-family: MicrosoftYaHei;
-      //   color: #2B80FD;
-      //   line-height: 17px;
-      //   float: left;
-      //   line-height: 40px;
-      //   i {
-      //     margin-right: 10px;
-      //   }
-      // }
+      .bottom_chuangjian {
+        display: inline-block;
+        font-size: 13px;
+        font-family: MicrosoftYaHei;
+        color: #2B80FD;
+        line-height: 17px;
+        float: left;
+        line-height: 40px;
+        i {
+          margin-right: 10px;
+        }
+      }
       .block {
         display: inline-block;
         float: right;

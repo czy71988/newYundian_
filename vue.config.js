@@ -18,6 +18,13 @@ module.exports = {
   configureWebpack: {
     externals: {
       TMap: 'TMap'
+    },
+    module: {
+      // rules: [{
+      //   // test: /\.json$/,
+      //   // use: 'json-loader'
+      // }
+      // ]
     }
   }
 }

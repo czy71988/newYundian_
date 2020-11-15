@@ -7,6 +7,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './router/permission'
 import store from './store'
 
+// if (process.env.NODE_ENV === 'development') {
+//   require('../mock')
+// }
+
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 

@@ -100,3 +100,13 @@ export function InterfaceGoodsExamine (data, catchConfig) {
   }, catchConfig)
   return req
 }
+
+// 商家下拉列表
+export function InterfaceMerchantList (data, catchConfig) {
+  const req = request({
+    method: 'get',
+    url: '/youmi-fresh/admin/user/getList',
+    data
+  }, catchConfig)
+  return req
+}

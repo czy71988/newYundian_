@@ -7,25 +7,38 @@
     </div>
 
     <div class="shopType_home_top">
-      <ul>
+      <ul style="margin-bottom:0px">
         <li>
-          <p>2</p>
+          <p>{{profitInfo.pickedNum || 0}}</p>
           <p>待取货</p>
         </li>
         <li>
-          <p>100</p>
+          <p>{{profitInfo.deliveredNum || 0}}</p>
           <p>待配送</p>
         </li>
         <li>
-          <p>20000</p>
+          <p>{{profitInfo.turnoverAmount || 0}}</p>
           <p>今日营业额</p>
         </li>
+      </ul>
+      <ul>
         <li>
-          <p>2000000</p>
-          <p>本月营业额</p>
+          <p>{{profitInfo.todayPrice || 0}}</p>
+          <p>今日收益</p>
+        </li>
+        <li>
+          <p>{{profitInfo.monthPrice || 0}}</p>
+          <p>本月收益</p>
+        </li>
+        <li>
+          <p>{{profitInfo.yearPrice || 0}}</p>
+          <p>今年收益</p>
         </li>
       </ul>
     </div>
+    <h1 style="padding-bottom:10px">
+      今日订单
+    </h1>
     <!-- 表格部分 -->
     <div class="shopType_content">
       <template>
@@ -34,24 +47,27 @@
           stripe
           style="width: 100%">
           <el-table-column
-            prop="tradeParentId"
+            prop="logisticsType"
             align="center"
             label="订单类型">
+            <template slot-scope="scope">
+              <span>{{scope.row.logisticsType | logisticsTypeFilter}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             align="center"
             label="下单时间">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate}}</span>
+              <span>{{scope.row.gmtCreate | dateFilter('MM:dd hh:mm:ss')}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="buyMobile"
             align="center"
             label="买家手机号">
           </el-table-column>
           <el-table-column
-            prop="shopName"
+            prop="receiverFullAddress"
             align="center"
             label="收货地址">
           </el-table-column>
@@ -59,13 +75,16 @@
             align="center"
             label="订单详情">
             <template slot-scope="scope">
-              <span @click="moke(scope)">查看订单详情</span>
+              <span @click="moke(scope.row)">查看订单详情</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            prop="orderStatus"
             align="center"
             label="状态">
+            <template slot-scope="scope">
+              <span>{{scope.row.orderStatus}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             align="center"
@@ -84,10 +103,10 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="10"
+          :current-page.sync="form.pageNo"
+          :page-size="form.pageSize"
           layout="total, prev, pager, next"
-          :total="1000">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -128,20 +147,82 @@
 </template>
 
 <script>
+import { InterfaceOrderList } from '@/api/order'
+import { getStoreProfitInfo } from '@/api/system'
+import { formatOrder } from '@/utils/format'
+const getTodyDate = () => {
+  const now = new Date()
+  const startDate = new Date(`${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`)
+  const endDate = new Date(`${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate() + 1}`)
+  return {
+    start: startDate.getTime(),
+    end: endDate.getTime(),
+    today: now.getDate(),
+    month: now.getMonth() + 1,
+    year: now.getFullYear()
+  }
+}
+const todyDate = getTodyDate()
 export default {
+  filters: {
+    logisticsTypeFilter (val) {
+      if (!val) return '--'
+      return val === 1 ? '自提订单' : '配送订单'
+    }
+  },
   data () {
     return {
       currentPage1: 1,
       shopShow: false,
       shopxContent: [],
-      list: [
-        { tradeParentId: '自取订单', gmtCreate: '2020-11-11', totalGoodsNum: '18321201141', shopName: '上海市青浦区华新镇华志路1685号', coreName: '已取货' }
-      ]
+      list: [],
+      total: 0,
+      form: {
+        orderType: 2,
+        beginCreTime: todyDate.start,
+        endCreTime: todyDate.end,
+        pageNo: 1,
+        pageSize: 20
+      },
+      profitForm: {
+        today: todyDate.today,
+        month: todyDate.month,
+        year: todyDate.year
+      },
+      profitInfo: {}
     }
+  },
+  created () {
+    this.getOrderList()
+    this.getProfitInfo()
   },
   mounted () {
   },
   methods: {
+    getOrderList () {
+      const form = this.form
+      const { pageNo } = form
+      InterfaceOrderList(form).then(data => {
+        let list = data || []
+        if (list.length < 1) {
+          if (pageNo === 1) {
+            this.total = 0
+          }
+        }
+        list = list.map(item => {
+          return formatOrder(item)
+        })
+        this.list = pageNo === 1 ? list : [...this.list, ...list]
+      })
+    },
+    // 获取收益信息
+    getProfitInfo () {
+      const form = this.profitForm
+      getStoreProfitInfo(form).then(data => {
+        console.log(data)
+        this.profitInfo = data || {}
+      })
+    },
     // 分页
     handleSizeChange (val) {
       console.log(val)

@@ -52,6 +52,7 @@
                   </template>
                   <el-menu-item-group>
                     <el-menu-item index="/shopList">商品列表</el-menu-item>
+                    <el-menu-item index="/commodity">商家商品审核</el-menu-item>
                     <el-menu-item index="/shopType">商品类目创建</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
@@ -121,7 +122,7 @@
                   </el-menu-item-group>
                 </el-submenu>
 
-                <el-submenu index="4">
+                <!-- <el-submenu index="4">
                   <template slot="title">
                     <img class="dsfg" src="../assets/编组 8@2x.png" alt="">
                     <span :class="index === '4' ? 'sdawe' : ''">财务结算</span>
@@ -129,7 +130,7 @@
                   <el-menu-item-group>
                     <el-menu-item index="/FinancialSettlement">财务结算</el-menu-item>
                   </el-menu-item-group>
-                </el-submenu>
+                </el-submenu> -->
               </el-menu>
 
               <!-- 商家 -->
