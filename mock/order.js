@@ -1,5 +1,5 @@
 
-import goodsListRes from './goods-list.res.json'
+import orderListRes from './order.res.json'
 const mocks = []
 
 // 对对象深拷贝
@@ -19,17 +19,17 @@ const depCopyForObj = (obj) => {
 }
 
 mocks.push({
-  url: /\/product\/query\/page*/,
+  url: /\/admin\/order\/adminFindOrderInfo*/,
   type: 'get',
   template: (options) => {
     console.log(JSON.stringify(options))
     const { pageNo, pageSize } = options.params
-    const goodsList = goodsListRes.data.records
-    const total = goodsListRes.data.total
+    const orederList = orderListRes.data
+    const total = orederList.length
     const totalPageNum = Math.ceil(total / pageSize)
-    const list = pageNo > totalPageNum ? [] : goodsList.slice((pageNo - 1) * pageSize, pageNo * pageSize)
-    const result = depCopyForObj(goodsListRes)
-    result.data.records = list
+    const list = pageNo > totalPageNum ? [] : orederList.slice((pageNo - 1) * pageSize, pageNo * pageSize)
+    const result = depCopyForObj(orderListRes)
+    result.data = list
     return result
   }
 })

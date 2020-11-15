@@ -4,7 +4,8 @@ import Mock from 'mockjs'
 import url from 'url'
 import qs from 'querystring'
 import goodsMocks from './goods'
-const mocks = [...goodsMocks]
+import orderMocks from './order'
+const mocks = [...goodsMocks, ...orderMocks]
 for (const mock of mocks) {
   Mock.mock(mock.url, mock.type, (options) => {
     // eslint-disable-next-line node/no-deprecated-api

@@ -1,6 +1,6 @@
 
 const formatAddress = (addressInfo = {}) => {
-  let { province, city, district, address, houseNumber } = addressInfo
+  let { province = '', city = '', district = '', address = '', houseNumber = '' } = addressInfo
   address = address + houseNumber
   if (address.indexOf(province) === 0) {
     return address
@@ -21,11 +21,11 @@ const formatOrder = order => {
   return Object.assign({}, order, {
     realPay: ((totalGoodsPrice || 0) * 100 + (deliveryFee || 0) * 100) / 100,
     receiverFullAddress: formatAddress({
-      province: receiverProvince,
-      city: receiverCity,
-      district: receiverDistrict,
-      address: shortAddress,
-      houseNumber
+      province: receiverProvince || '',
+      city: receiverCity || '',
+      district: receiverDistrict || '',
+      address: shortAddress || '',
+      houseNumber: houseNumber || ''
     })
   })
 }
