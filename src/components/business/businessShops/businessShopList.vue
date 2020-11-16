@@ -97,12 +97,12 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="inStorageAmount"
             align="center"
             label="入仓数量">
           </el-table-column>
           <el-table-column
-            prop="submitAmount"
+            prop="salesAmount"
             align="center"
             label="销售数量">
           </el-table-column>
@@ -367,7 +367,7 @@ export default {
         InterfaceGoodsUpdate({
           id: this.shopID,
           examineType: 0,
-          amount: this.form.submitAmount
+          submitAmount: this.form.submitAmount
         }).then(data => {
           this.$message({
             message: '修改商品成功',

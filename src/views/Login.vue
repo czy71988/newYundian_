@@ -4,7 +4,18 @@
       <p>中通云店·后台管理系统</p>
       <div class="Login_divs">
         <span>手机号：</span>
-        <span><el-input v-model="form.phone" placeholder="请输入账号"></el-input></span>
+        <span>
+          <!-- <el-input v-model="form.phone" placeholder="请输入账号">
+          </el-input> -->
+          <el-select v-model="form.phone" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </span>
       </div>
       <div class="Login_divs">
         <span>验证码：</span>
@@ -38,7 +49,14 @@ export default {
       },
       btntxt: '获取验证码',
       time: '',
-      disabled: false
+      disabled: false,
+      options: [
+        { id: 1, value: '12345678901', label: '商家账号' },
+        { id: 2, value: '12345678902', label: '中心仓' },
+        { id: 3, value: '12345678903', label: '网点' },
+        { id: 4, value: '12345678904', label: '门店' },
+        { id: 5, value: '11111111111', label: '运营' }
+      ]
     }
   },
   created () {

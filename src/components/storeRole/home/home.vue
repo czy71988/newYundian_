@@ -151,7 +151,8 @@
     <!-- 弹窗部分 -- 商品创建编辑 -->
     <div class="shopType_diagio">
       <el-dialog
-        :visible.sync="shopShow">
+        :visible.sync="shopShow"
+        width="50%">
         <div class="display-table">
           <el-table
             :data="goodsList"
@@ -385,12 +386,12 @@ export default {
     getOrderDetail (row) {
       InterfaceQueryOrderList({
         orderId: row.tradeParentId
+      }).then(data => {
+        console.log('1', data)
+        this.goodsList = data[0].adminGoodsList
+        console.log('2', this.goodsList)
+        this.shopShow = !this.shopShow
       })
-        .then(data => {
-          console.log(data)
-          this.goodsList = data.adminGoodsList || []
-          this.shopShow = !this.shopShow
-        })
         .catch(err => {
           this.$message.error('获取商品信息失败' + err.message)
         })

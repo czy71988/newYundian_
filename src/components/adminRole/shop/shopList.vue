@@ -183,16 +183,6 @@
                 <img width="100%" :src="dialogImageUrl.url" alt="">
               </el-dialog>
             </el-form-item>
-            <!-- <el-form-item label="所在仓位置：">
-              <el-select v-model="form.storeHouse" placeholder="请选择活动区域">
-                <el-option
-                  v-for="item in fghty"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item> -->
             <el-form-item label="所属类目：">
               <el-select v-model="form.categoryId" placeholder="请选择所属类目">
                 <el-option
@@ -206,7 +196,10 @@
             <el-form-item label="销售价：">
               <el-input v-model="form.price"></el-input>
             </el-form-item>
-            <el-form-item label="库存数量：">
+            <el-form-item label="库存数量：" v-if="this.biaotiname == '商品编辑'">
+              <el-input :disabled="true" v-model="form.submitAmount"></el-input>
+            </el-form-item>
+            <el-form-item label="库存数量：" v-else>
               <el-input v-model="form.submitAmount"></el-input>
             </el-form-item>
             <el-form-item label="商品重量：">

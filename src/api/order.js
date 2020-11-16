@@ -61,3 +61,43 @@ export function orderConfirmReceipt (data, catchConfig) {
   }, catchConfig)
   return req
 }
+
+// 运营后台财务列表
+export function SettlementApplication (data, catchConfig) {
+  const req = request({
+    method: 'get',
+    url: '/youmi-fresh/admin/settle/getFinanceApplyInfo',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 运营后台财务-通过审核
+export function SettlementApplicationOut (data, catchConfig) {
+  const req = request({
+    method: 'POST',
+    url: '/youmi-fresh/admin/settle/applyUpdateStatusAdopt',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 运营后台财务-拒绝审核
+export function SettlementApplicationReOut (data, catchConfig) {
+  const req = request({
+    method: 'POST',
+    url: '/youmi-fresh/admin/settle/applyUpdateStatusFail',
+    data
+  }, catchConfig)
+  return req
+}
+
+// 运营后台财务-上传凭证
+export function UploadVoucher (data, catchConfig) {
+  const req = request({
+    method: 'POST',
+    url: '/youmi-fresh/admin/settle/auditApplyOperation',
+    data
+  }, catchConfig)
+  return req
+}

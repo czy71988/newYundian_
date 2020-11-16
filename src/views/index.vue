@@ -79,6 +79,7 @@
                     <el-menu-item index="/zhongxin">中心仓管理</el-menu-item>
                     <el-menu-item index="/ShopStoer">商家管理</el-menu-item>
                     <el-menu-item index="/Commission">分佣设置</el-menu-item>
+                    <el-menu-item index="/SettlementApplication">结算申请</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
               </el-menu>
@@ -181,10 +182,10 @@
                   <span slot="title">门店管理</span>
                 </el-menu-item>
 
-                <el-menu-item index="/OutletsShop">
+                <!-- <el-menu-item index="/OutletsShop">
                   <img class="dsfg" src="../assets/编组 3@2x(1).png" alt="">
                   <span slot="title">商品库存管理</span>
-                </el-menu-item>
+                </el-menu-item> -->
 
                 <el-menu-item index="/OutletsFinance">
                   <img class="dsfg" src="../assets/编组 3@2x(1).png" alt="">

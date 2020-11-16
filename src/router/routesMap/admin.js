@@ -78,6 +78,11 @@ const routes = [
     path: '/commodity',
     name: 'commodity',
     component: () => import(/* webpackChunkName: "adminRole" */ '@/components/adminRole/shop/commodity.vue')
+  },
+  {
+    path: '/SettlementApplication',
+    name: 'SettlementApplication',
+    component: () => import(/* webpackChunkName: "adminRole" */ '@/components/adminRole/xitongshezhi/SettlementApplication.vue')
   }
 
 ]

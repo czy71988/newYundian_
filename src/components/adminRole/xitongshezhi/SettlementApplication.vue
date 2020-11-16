@@ -5,27 +5,26 @@
       <span>· 财务结算</span>
       <span>财务结算</span>
     </div>
-
-    <div class="shopType_home_top">
-      <ul>
-        <li>
-          <p>{{xinxi.saleTotalPrice}}</p>
-          <p>销售总额</p>
-        </li>
-        <li>
-          <p>{{xinxi.settledAmount}}</p>
-          <p>已结算金额</p>
-        </li>
-        <li>
-          <p>{{xinxi.auditAmount}}</p>
-          <p>审核中金额</p>
-        </li>
-        <li>
-          <p>{{xinxi.toBeAmount}}</p>
-          <p>可结算金额 <span @click="settlement" style="margin-left: 10px; font-size: 12px; color: ">申请结算</span></p>
-        </li>
-      </ul>
+    <div class="top">
+      <el-form ref="form" :model="outfrom" label-width="100px">
+        <el-form-item label="审核结果">
+          <el-select v-model="outfrom.status" placeholder="请选择活动区域">
+            <el-option label="待审核" value="1"></el-option>
+            <el-option label="审核通过" value="2"></el-option>
+            <el-option label="审核拒绝" value="3"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否已打款">
+          <el-select v-model="outfrom.isSettle" placeholder="请选择活动区域">
+            <el-option label="已结算" value="0"></el-option>
+            <el-option label="未结算" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <el-button @click="sousuo" type="primary" plain>搜索</el-button>
+      <el-button type="info" plain>重置</el-button>
     </div>
+
     <!-- 表格部分 -->
     <div class="shopType_content">
       <template>
@@ -39,28 +38,33 @@
             label="订单编号">
           </el-table-column>
           <el-table-column
+            prop="applyName"
             align="center"
-            label="申请时间">
+            label="申请商家姓名">
+          </el-table-column>
+          <el-table-column
+            prop="applyPhone"
+            align="center"
+            label="申请商家手机号">
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="申请日期">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate}}</span>
+              <span>{{scope.row.gmtCreate.substring(0, 19)}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="applyAmount"
+            prop="applyPhone"
             align="center"
             label="申请结算金额">
           </el-table-column>
           <el-table-column
-            prop="status"
             align="center"
-            label="审核结果">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="发票是否寄出">
+            label="审核操作">
             <template slot-scope="scope">
-              <span v-if="scope.row.invoiceSendOut == '未寄出'" @click="moke(scope.row.id)">{{scope.row.invoiceSendOut}}</span>
-              <span v-else>{{scope.row.invoiceSendOut}}</span>
+              <span v-if="scope.row.status !== '审核通过'" @click="moke(scope.row.id)">{{scope.row.status}}</span>
+              <span v-else>{{scope.row.status}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -70,15 +74,19 @@
           </el-table-column>
           <el-table-column
             align="center"
-            label="是否已打款">
+            label="打印凭证">
             <template slot-scope="scope">
-              <el-image
-               v-if="scope.row.paymentVoucher !== '' && scope.row.paymentVoucher !== null"
-                style="width: 100%; height: 100%"
-                :src="scope.row.paymentVoucher"
-                :preview-src-list="[scope.row.paymentVoucher]">
-              </el-image>
-              <span v-else>否</span>
+              <img class="imgupdate" v-if="scope.row.paymentVoucher !== '' && scope.row.paymentVoucher !== null" :src="scope.row.paymentVoucher" alt="">
+              <span v-else>
+                <el-upload
+                  class="avatar-uploader"
+                  :show-file-list="false"
+                  action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
+                  :on-success="function (res, file) { return handleAvatarSuccess(res, file, scope.row.id)}"
+                  :before-upload="beforeAvatarUpload">
+                  <i class="el-icon-plus avatar-uploader-icon">点击上传</i>
+                </el-upload>
+              </span>
             </template>
           </el-table-column>
         </el-table>
@@ -102,15 +110,11 @@
     <!-- 弹窗部分 -- 商品创建编辑 -->
     <div class="shopType_diagio">
       <el-dialog
-        :visible.sync="shopShow"
-        width="30%">
+        :visible.sync="shopShow">
         <div class="uers_dialog">
-          <div class="ksdjhfk">
-            <el-input class="sjdf" v-model="shbfev.logisticsCompany" placeholder="请输入物流公司"></el-input>
-            <el-input class="sjdf" v-model="shbfev.logisticsNum" placeholder="请输入物流单号"></el-input>
-            <el-button type="primary" @click="kjdvifjiv">确定</el-button>
-            <el-button type="primary" plain  @click="sdfgbgb">取消</el-button>
-          </div>
+          <p>商家结算是否通过审核</p>
+          <el-button @click="out" type="primary" plain>通过审核</el-button>
+          <el-button @click="Reout" type="info" plain>拒绝审核</el-button>
         </div>
       </el-dialog>
     </div>
@@ -118,91 +122,96 @@
 </template>
 
 <script>
-import { InterfaceFinance, settlementstore, SettlementListstore, SettlementUpdate } from '../../../api/system'
+import { SettlementApplication, SettlementApplicationOut, SettlementApplicationReOut, UploadVoucher } from '../../../api/order'
 export default {
   data () {
     return {
-      xinxi: '',
       currentPage1: 1,
-      shopShow: false,
-      shopxContent: [],
-      from: {
-        status: '',
-        isSettle: '',
+      list: [],
+      outfrom: {
+        orderType: 2,
         pageNo: '1',
-        pageSize: '10'
+        pageSize: '10',
+        status: '',
+        isSettle: ''
       },
-      shbfev: {
-        id: '',
-        logisticsCompany: '',
-        logisticsNum: ''
-      },
+      // time: '',
+      shopShow: false,
+      ids: '',
       total: 0,
-      list: []
+      imageUrl: '',
+      imgID: ''
     }
   },
   mounted () {
     this.getList()
   },
   methods: {
-    // 获取信息
-    getList () {
-      InterfaceFinance().then(data => {
-        console.log('信息', data)
-        this.xinxi = data
-      })
-      SettlementListstore(this.from).then(data => {
-        console.log('结算列表', data)
-        this.list = data
-        this.total = data.total
-      })
-    },
-    // 申请结算
-    settlement () {
-      if (this.xinxi.toBeAmount > 0) {
-        settlementstore().then(data => {
-          console.log('申请结算', data)
-          this.$message({
-            message: '结算成功',
-            type: 'success'
-          })
-        })
-      } else {
-        this.$message.error('可结算金额不足')
-      }
-    },
     // 分页
     handleSizeChange (val) {
-      this.from.pageSize = val
+      this.pageSize = val
       this.getList()
     },
     handleCurrentChange (val) {
-      this.from.pageNo = val
+      this.pageNo = val
       this.getList()
     },
-    // // 填写物流单号
-    moke (id) {
-      this.shopShow = !this.shopShow
-      this.shbfev.id = id
+    getList () {
+      SettlementApplication(this.outfrom).then(data => {
+        console.log('列表', data)
+        this.list = data
+        this.total = this.list[0].totalCount || 0
+      })
     },
-    kjdvifjiv () {
-      SettlementUpdate(this.shbfev).then(data => {
-        this.$message({
-          message: '修改成功',
-          type: 'success'
-        })
-        this.sdfgbgb()
+    sousuo () {
+      this.getList()
+    },
+    moke (id) {
+      this.ids = id
+      this.shopShow = !this.shopShow
+    },
+    out () {
+      SettlementApplicationOut({
+        id: this.ids
+      }).then(data => {
+        this.$message('审核已通过')
         this.getList()
       })
     },
-    sdfgbgb () {
-      this.shopShow = !this.shopShow
-      this.shbfev = {
-        id: '',
-        logisticsCompany: '',
-        logisticsNum: ''
+    Reout () {
+      SettlementApplicationReOut({
+        id: this.ids
+      }).then(data => {
+        this.$message('审核已拒绝')
+        this.getList()
+      })
+    },
+    uploadH () {
+      UploadVoucher({
+        id: this.imgID,
+        paymentVoucher: this.imageUrl
+      }).then(data => {
+        this.getList()
+      })
+    },
+    handleAvatarSuccess (res, file, id) {
+      this.imgID = id
+      this.imageUrl = res.data
+      this.uploadH()
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
       }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     }
+
   }
 }
 </script>
@@ -289,6 +298,16 @@ export default {
   .shopType {
     padding: 0 15px;
     box-sizing: border-box;
+    .top {
+      margin-bottom: 20px;
+      .input {
+        margin: 0 10px;
+        width: 200px;
+      }
+      .el-form-item {
+        display: inline-block;
+      }
+    }
     .shopType_top {
       line-height: 92px;
       span {
@@ -329,15 +348,12 @@ export default {
           }
         }
         li:last-child {
-          color: rgb(255, 255, 255);
-          span {
-            color: #163D70;
-          }
+          color: rgb(77, 75, 75);
         }
       }
     }
     .shopType_content {
-      .img_class {
+      .imgupdate {
         width: 100%;
         height: 100%;
       }
@@ -377,15 +393,15 @@ export default {
     }
     .shopType_diagio {
       .uers_dialog {
-        // padding: 10 80px;
+        padding: 10px;
         box-sizing: border-box;
         text-align: center;
-        .ksdjhfk {
-          padding: 30px 80px;
-          box-sizing: border-box;
-        }
-        .sjdf {
-          margin-bottom: 20px;
+        padding: 20px 0;
+        box-sizing: border-box;
+        P {
+          line-height: 90PX;
+          font-size: 20PX;
+          text-align: center;
         }
       }
     }

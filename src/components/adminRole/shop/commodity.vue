@@ -47,19 +47,6 @@
               <img class="sdfsgerg" :src="scope.row.mainPic" alt="">
             </template>
           </el-table-column>
-          <!-- <el-table-column
-            align="center"
-            label="商品详情图">
-            <template slot-scope="scope">
-              <span
-               @click="DetailedDrawing(scope.row.id)">点击查看详情图</span>
-              <el-image
-                style="width: 100px; height: 100px"
-                :src="dialogImageUrl[0]"
-                :preview-src-list="dialogImageUrl">
-              </el-image>
-            </template>
-          </el-table-column> -->
           <el-table-column
             prop="title"
             align="center"
@@ -95,7 +82,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="inStorageAmount"
             align="center"
             label="入仓数量">
           </el-table-column>
@@ -132,7 +119,7 @@
         :visible.sync="innerVisible"
         append-to-body>
         <span>选择接收数量</span>
-        <el-input v-model="amount" placeholder="请输入内容"></el-input>
+        <el-input v-model="inStorageAmount" placeholder="请输入内容"></el-input>
         <div slot="footer" class="dialog-footer">
           <el-button @click="innerVisible = false">取消</el-button>
           <el-button type="primary" @click="Mokeexamineout">确定</el-button>
@@ -266,7 +253,7 @@ export default {
       total: 0,
       list: '',
       ShopStyle: [],
-      amount: '',
+      inStorageAmount: '',
       examineId: ''
     }
   },
@@ -291,7 +278,7 @@ export default {
       InterfaceGoodsExamine({
         id: this.examineId,
         examine: 1,
-        amount: this.amount
+        inStorageAmount: this.inStorageAmount
       }).then(data => {
         this.$message('审核通过')
         this.getlist()
