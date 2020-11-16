@@ -90,7 +90,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span style="color: #4A4AFF" v-if="scope.row.examine !== 1" @click="Mokeexamine">{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
+              <span style="color: #4A4AFF" v-if="scope.row.examine !== 1" @click="Mokeexamine(scope.row.id)">{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
               <span style="color: #8E8E8E" v-else>{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
             </template>
           </el-table-column>
@@ -140,8 +140,8 @@
       </el-dialog>
       <span>是否通过该商品的审核</span>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="OUtexamineout">否</el-button>
-        <el-button type="primary" @click="innerVisible = true">是</el-button>
+        <el-button @click="OUtexamineout">拒绝审核</el-button>
+        <el-button type="primary" @click="innerVisible = true">通过审核</el-button>
       </div>
     </el-dialog>
     <!-- 弹窗部分 -- 商品创建编辑 -->
@@ -266,7 +266,8 @@ export default {
       total: 0,
       list: '',
       ShopStyle: [],
-      amount: ''
+      amount: '',
+      examineId: ''
     }
   },
   props: ['pagedata'],
@@ -282,11 +283,13 @@ export default {
       this.imgSrc = e.currentTarget.src
     },
     // 商品审核
-    Mokeexamine () {
+    Mokeexamine (id) {
+      this.examineId = id
       this.outerVisible = !this.outerVisible
     },
     Mokeexamineout () {
       InterfaceGoodsExamine({
+        id: this.examineId,
         examine: 1,
         amount: this.amount
       }).then(data => {
@@ -298,6 +301,7 @@ export default {
     },
     OUtexamineout () {
       InterfaceGoodsExamine({
+        id: this.examineId,
         examine: 2
       }).then(data => {
         this.$message('已拒绝')

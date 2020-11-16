@@ -30,6 +30,9 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(res => {
   const data = res.data
   if (data.code !== 200) {
+    if (data.message === '未登录') {
+      this.$route.push({ name: 'login' })
+    }
     return Promise.reject(new Error(data.message))
   }
   return data.data

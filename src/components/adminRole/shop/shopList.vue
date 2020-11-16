@@ -213,7 +213,7 @@
               <el-input v-model="form.weight"></el-input>
             </el-form-item>
             <el-form-item label="商家来源：">
-              <el-select v-model="form.categoryId" placeholder="请选择商家来源">
+              <el-select v-model="form.businessId" placeholder="请选择商家来源">
                 <el-option
                   v-for="item in McList"
                   :key="item.id"
@@ -263,7 +263,8 @@ export default {
         categoryId: '',
         price: '',
         submitAmount: '',
-        weight: ''
+        weight: '',
+        businessId: ''
       },
       // 请求列表参数
       getform: {
