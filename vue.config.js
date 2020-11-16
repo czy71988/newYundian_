@@ -7,11 +7,9 @@ module.exports = {
   // devServer: {
   //   proxy: {
   //     '/youmi-fresh': {
-  //       target: baseURL,
-  //       changeOrigin: true, // 是否改变源地址
-  //       pathRewrite: {
-  //         '^/temp': ''
-  //       }
+  //       target: 'https://test.zk020.cn/',
+  //       changeOrigin: true // 是否改变源地址
+
   //     }
   //   }
   // },

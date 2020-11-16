@@ -6,6 +6,7 @@ import routesMap from '../router/routesMap'
 import router from '../router'
 import { setToken } from '../utils/auth'
 import { yundianLogin } from '../api/login'
+import order from './modules/order'
 Vue.use(Vuex)
 
 const state = {
@@ -63,7 +64,8 @@ const actions = {
 
 export default new Vuex.Store({
   modules: {
-    user
+    user,
+    order
   },
   state,
   getters,
