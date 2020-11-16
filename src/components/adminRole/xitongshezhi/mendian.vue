@@ -3,7 +3,6 @@
     <!-- 头部部分 -->
     <div class="BanNer_top">
       <p>· 系统设置  门店管理</p>
-      <!-- <div @click="chuangjian">创建Banner</div> -->
       <div class="BanNer_top_p">
         <span>门店名称：</span>
         <el-input v-model="from.title" placeholder="请输入内容"></el-input>
@@ -333,6 +332,10 @@ export default {
         phone: '',
         parentId: '',
         state: ''
+        // idcard: '',
+        // idcardUrl: '',
+        // tyshxyDm: '',
+        // licenseUrl: ''
       },
       sjdh: [],
       sdfswfsdd: [],
@@ -489,23 +492,25 @@ export default {
     // 上传身份证照片
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(res)
       this.form.idcardUrl = res.data.url
     },
     // 上传营业照片
     handleAvatarSuccess1 (res, file) {
       this.imageUrl1 = URL.createObjectURL(file.raw)
+      console.log(res)
       this.form.licenseUrl = res.data.url
     },
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
+      // const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!')
+      // }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M
+      return isLt2M
     }
   }
 }
