@@ -86,22 +86,22 @@
             label="商品重量">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="shopAmount"
             align="center"
             label="库存数量">
           </el-table-column>
           <!-- <el-table-column
-            prop="amount"
+            prop="shopAmount"
             align="center"
             label="审核状态">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="shopAmount"
             align="center"
             label="入仓数量">
           </el-table-column>
           <el-table-column
-            prop="amount"
+            prop="shopAmount"
             align="center"
             label="销售数量">
           </el-table-column> -->
@@ -188,7 +188,7 @@
               <el-input v-model="form.weight" disabled></el-input>
             </el-form-item>
             <el-form-item label="库存：">
-              <el-input v-model="form.amount" disabled></el-input>
+              <el-input v-model="form.shopAmount" disabled></el-input>
             </el-form-item>
             <el-form-item>
               <el-button @click="jdhigjheirg">取消</el-button>
@@ -243,7 +243,7 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        shopAmount: '',
         weight: ''
       },
       // 请求列表参数
@@ -281,7 +281,7 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
+        shopAmount: '',
         weight: ''
       }
       this.urls = []

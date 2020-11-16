@@ -242,7 +242,7 @@
                 <div class="kdjgiuerg">
                   <el-upload
                     class="avatar-uploader"
-                    :action="sdjdhui"
+                    action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload">
@@ -255,7 +255,7 @@
                 <div class="kdjgiuerg">
                   <el-upload
                     class="avatar-uploader"
-                    action="https://test.zk020.cn/youmi-fresh/admin/eleme/uploadFile"
+                    action="https://bee.zk020.cn/bee-admin/admin/systemIndex/doUploadFile"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess1"
                     :before-upload="beforeAvatarUpload">
@@ -332,10 +332,6 @@ export default {
         phone: '',
         parentId: '',
         state: ''
-        // idcard: '',
-        // idcardUrl: '',
-        // tyshxyDm: '',
-        // licenseUrl: ''
       },
       sjdh: [],
       sdfswfsdd: [],
@@ -346,7 +342,6 @@ export default {
         { value: '1', label: '蜂鸟配送' }
       ],
       total: 0,
-      sdjdhui: 'https://test.zk020.cn/youmi-fresh/admin/eleme/uploadFile',
       imageUrl: '',
       imageUrl1: ''
     }
@@ -358,7 +353,7 @@ export default {
   },
   methods: {
     sousupo () {
-      this.getlist()
+      alert()
     },
     // 清空
     sjkdhg () {
@@ -492,14 +487,12 @@ export default {
     // 上传身份证照片
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      console.log(res)
-      this.form.idcardUrl = res.data.url
+      this.form.idcardUrl = res.data
     },
     // 上传营业照片
     handleAvatarSuccess1 (res, file) {
       this.imageUrl1 = URL.createObjectURL(file.raw)
-      console.log(res)
-      this.form.licenseUrl = res.data.url
+      this.form.licenseUrl = res.data
     },
     beforeAvatarUpload (file) {
       // const isJPG = file.type === 'image/jpeg'

@@ -8,14 +8,14 @@
         <span>商品标题：</span>
         <el-input v-model="getform.title" placeholder="请输入内容"></el-input>
         <span>审核状态：</span>
-        <!-- <el-select v-model="getform.label" placeholder="请选择">
+        <el-select v-model="getform.examineType" placeholder="请选择">
           <el-option
             v-for="item in dfgsdf"
             :key="item.value"
             :label="item.label"
             :value="item.value">
           </el-option>
-        </el-select> -->
+        </el-select>
         <div>
           <el-button type="primary" round  @click="sousuo">搜索</el-button>
           <el-button type="info" round>重置</el-button>
@@ -112,7 +112,7 @@
             width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.examine !== 1" class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
-              <span v-else class="Banner_spanout" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
+              <span v-else class="Banner_spanout"><i class="el-icon-edit"></i>重新审核</span>
             </template>
           </el-table-column>
         </el-table>
@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { InterfaceAddshopdetails, InterfaceshopSohp, Interfaceshopdetails, InterfaceGoodsStyle, InterfaceGoodsExamine } from '@/api/shop'
+import { InterfaceAddshopdetails, InterfaceshopSohp, Interfaceshopdetails, InterfaceGoodsStyle, InterfaceGoodsUpdate } from '@/api/shop'
 import { deleteElementByValue } from '@/utils/khg'
 export default {
   data () {
@@ -236,8 +236,8 @@ export default {
       getform: {
         pageNo: '1',
         pageSize: '10',
-        title: ''
-        // label: ''
+        title: '',
+        examineType: ''
       },
       dfgsdf: [
         { value: '0', label: '待审核' },
@@ -251,7 +251,8 @@ export default {
       urls: [],
       total: 0,
       list: '',
-      ShopStyle: []
+      ShopStyle: [],
+      shopID: ''
     }
   },
   props: ['pagedata'],
@@ -310,10 +311,10 @@ export default {
     // 商品编辑
     bianji (item) {
       this.biaotiname = '商品编辑'
-      const id = item.id
+      this.shopID = item.id
       this.jdhigjheirg()
       Interfaceshopdetails({
-        id: id
+        id: this.shopID
       }).then(data => {
         this.form = data
         this.imageUrl = data.mainPic
@@ -363,8 +364,9 @@ export default {
         })
       } else {
         // 编辑操作
-        InterfaceGoodsExamine({
-          examine: 0,
+        InterfaceGoodsUpdate({
+          id: this.shopID,
+          examineType: 0,
           amount: this.form.submitAmount
         }).then(data => {
           this.$message({

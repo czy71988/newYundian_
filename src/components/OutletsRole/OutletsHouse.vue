@@ -201,7 +201,7 @@ export default {
         managerName: '',
         phone: '',
         address: '',
-        state: '',
+        state: 1,
         longitude: '',
         latitude: '',
         parentId: '',
@@ -212,6 +212,7 @@ export default {
         idcardUrl: '',
         tyshxyDm: '',
         licenseUrl: ''
+        // state: 1
       },
       dkjgbkebr: '',
       from: {
@@ -251,7 +252,7 @@ export default {
         managerName: '',
         phone: '',
         address: '',
-        state: '',
+        state: 1,
         longitude: '',
         latitude: '',
         parentId: '',
