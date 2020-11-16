@@ -151,31 +151,51 @@
     <!-- 弹窗部分 -- 商品创建编辑 -->
     <div class="shopType_diagio">
       <el-dialog
-        :visible.sync="shopShow"
-        width="80%">
-        <div class="uers_dialog">
-          <div>
-            <ul class="uers_log">
-              <li>商品ID</li>
-              <li>图片</li>
-              <li>名称</li>
-              <li>价格</li>
-              <li>数量</li>
-              <li>重量</li>
-              <li>标签</li>
-            </ul>
-            <ul class="uers_logs">
-             <li v-for="goods in goodsList" :key="goods.item">
-                <span>{{goods.itemId}}</span>
-                <span><img :src="goods.itemImg" alt=""></span>
-                <span>{{goods.itemTitle}}</span>
-                <span>{{goods.originalPrice}}</span>
-                <span>{{goods.itemNum}}</span>
-                <span>{{goods.weight}}</span>
-                <span>{{goods.label}}</span>
-              </li>
-            </ul>
-          </div>
+        :visible.sync="shopShow">
+        <div class="display-table">
+          <el-table
+            :data="goodsList"
+            stripe
+            style="width: 100%">
+            <el-table-column
+              prop="itemId"
+              align="center"
+              label="商品ID">
+            </el-table-column>
+            <el-table-column
+              prop="itemImg"
+              align="center"
+              label="图片">
+              <template slot-scope="{row}">
+                <img style="width:100px;height:100px" :src="row.itemImg" alt="">
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="itemTitle"
+              align="center"
+              label="名称">
+            </el-table-column>
+            <el-table-column
+              prop="originalPrice"
+              align="center"
+              label="价格">
+            </el-table-column>
+            <el-table-column
+              prop="itemNum"
+              align="center"
+              label="数量">
+            </el-table-column>
+            <el-table-column
+              prop="goodsWeight"
+              align="center"
+              label="重量">
+            </el-table-column>
+            <el-table-column
+              prop="label"
+              align="center"
+              label="标签">
+            </el-table-column>
+          </el-table>
         </div>
       </el-dialog>
     </div>
@@ -183,7 +203,7 @@
 </template>
 
 <script>
-import { InterfaceOrderList } from '@/api/order'
+import { InterfaceOrderList, orderConfirmReceipt, InterfaceQueryOrderList } from '@/api/order'
 import { getStoreProfitInfo } from '@/api/system'
 import { formatOrder } from '@/utils/format'
 const getTodyDate = () => {
@@ -346,12 +366,34 @@ export default {
         })
     },
     updateOrderStatus (row) {
-
+      orderConfirmReceipt({
+        orderId: row.tradeParentId
+      })
+        .then(data => {
+          this.$message.success('确认收货成功')
+          this.form.pageNo = 1
+          this.getOrderList()
+        })
+        .catch(err => {
+          this.$message.error('确认收货失败' + err.message)
+        })
     },
     // 查看按钮
     moke (row) {
-      this.goodsList = row.goodsList
-      this.shopShow = !this.shopShow
+      this.getOrderDetail(row)
+    },
+    getOrderDetail (row) {
+      InterfaceQueryOrderList({
+        orderId: row.tradeParentId
+      })
+        .then(data => {
+          console.log(data)
+          this.goodsList = data.adminGoodsList || []
+          this.shopShow = !this.shopShow
+        })
+        .catch(err => {
+          this.$message.error('获取商品信息失败' + err.message)
+        })
     }
   }
 }

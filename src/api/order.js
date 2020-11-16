@@ -46,6 +46,17 @@ export function Interfaceorderexport (data, catchConfig) {
   const req = request({
     method: 'get',
     url: '/youmi-fresh/admin/order/adminExcelOrderInfo',
+    data,
+    responseType: 'blob'
+  }, catchConfig)
+  return req
+}
+
+// 确认收货 /youmi-fresh/apiUser/order/confirmOrderReceiptNew
+export function orderConfirmReceipt (data, catchConfig) {
+  const req = request({
+    method: 'post',
+    url: '/youmi-fresh/apiUser/order/confirmOrderReceiptNew',
     data
   }, catchConfig)
   return req

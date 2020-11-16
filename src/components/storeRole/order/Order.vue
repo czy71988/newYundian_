@@ -18,7 +18,7 @@
       <el-input class="input" v-model="form.orderId" placeholder="请输入订单号"></el-input>
       <el-button type="primary" plain @click="onSearch">搜索</el-button>
       <el-button type="info" plain @click="onReset">重置</el-button>
-      <el-button type="success" plain>导出</el-button>
+      <el-button type="success" plain @click="onExport">导出</el-button>
     </div>
 
     <!-- 表格部分 -->
@@ -117,7 +117,7 @@
               label="数量">
             </el-table-column>
             <el-table-column
-              prop="weight"
+              prop="goodsWeight"
               align="center"
               label="重量">
             </el-table-column>
@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { InterfaceOrderList } from '@/api/order'
+import { InterfaceOrderList, InterfaceQueryOrderList } from '@/api/order'
 import { formatOrder } from '@/utils/format'
 const getDefaultSearchForm = () => {
   return {
@@ -216,8 +216,37 @@ export default {
       this.getOrderList()
     },
     bianji (row) {
-      this.goodsList = row.goodsList
-      this.shopShow = !this.shopShow
+      // this.goodsList = row.goodsList
+      // this.shopShow = !this.shopShow
+      this.getOrderDetail(row)
+    },
+    getOrderDetail (row) {
+      InterfaceQueryOrderList({
+        orderId: row.tradeParentId
+      })
+        .then(data => {
+          console.log(data)
+          if (data[0]) {
+            this.goodsList = data[0].adminGoodsList || []
+            this.shopShow = !this.shopShow
+          } else {
+            this.$message.error('没有改订单详情信息')
+          }
+        })
+        .catch(err => {
+          this.$message.error('获取改订单详情信息失败' + err.message)
+        })
+    },
+    onExport () {
+      const form = Object.assign({}, this.form, {
+        filename: '订单.xls'
+      })
+      delete form.pageNo
+      delete form.pageSize
+      this.$store.dispatch('order/exportOrderExcel', Object.assign({}, form))
+        .then(data => {
+          this.url = data
+        })
     }
   }
 }

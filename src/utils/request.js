@@ -18,9 +18,9 @@ const service = axios.create({
 // 请求拦截
 service.interceptors.request.use(config => {
   config.baseURL = reqConfig.baseUrl
-  config.headers = {
+  config.headers = Object.assign({}, {
     token: getToken()
-  }
+  }, config.headers || {})
   return config
 }, err => {
   return Promise.reject(err)
@@ -29,10 +29,12 @@ service.interceptors.request.use(config => {
 // 响应拦截
 service.interceptors.response.use(res => {
   const data = res.data
-  if (data.code !== 200) {
+  console.log(res)
+  console.log(typeof res.data)
+  if (data.code !== undefined && data.code !== 200) {
     return Promise.reject(new Error(data.message))
   }
-  return data.data
+  return data.data || data
 }, err => {
   return Promise.reject(err)
 })
