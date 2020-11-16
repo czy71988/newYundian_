@@ -73,7 +73,13 @@ const routes = [
     path: '/Commission',
     name: 'Commission',
     component: () => import(/* webpackChunkName: "adminRole" */ '@/components/adminRole/xitongshezhi/Commission.vue')
+  },
+  {
+    path: '/commodity',
+    name: 'commodity',
+    component: () => import(/* webpackChunkName: "adminRole" */ '@/components/adminRole/shop/commodity.vue')
   }
+
 ]
 
 export default routes

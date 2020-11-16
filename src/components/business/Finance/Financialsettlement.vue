@@ -9,16 +9,16 @@
     <div class="shopType_home_top">
       <ul>
         <li>
-          <p>2</p>
+          <p>{{xinxi.saleTotalPrice}}</p>
           <p>销售总额</p>
         </li>
         <li>
-          <p>100</p>
+          <p>{{xinxi.settledAmount}}</p>
           <p>已结算金额</p>
         </li>
         <li>
-          <p>20000</p>
-          <p>可结算金额 <span style="margin-left: 10px; font-size: 12px; color: ">申请结算</span></p>
+          <p>{{xinxi.toBeAmount}}</p>
+          <p>可结算金额 <span @click="settlement" style="margin-left: 10px; font-size: 12px; color: ">申请结算</span></p>
         </li>
       </ul>
     </div>
@@ -30,7 +30,7 @@
           stripe
           style="width: 100%">
           <el-table-column
-            prop="tradeParentId"
+            prop="id"
             align="center"
             label="订单编号">
           </el-table-column>
@@ -42,12 +42,12 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="applyAmount"
             align="center"
             label="申请结算金额">
           </el-table-column>
           <el-table-column
-            prop="shopName"
+            prop="status"
             align="center"
             label="审核结果">
           </el-table-column>
@@ -55,24 +55,21 @@
             align="center"
             label="发票是否寄出">
             <template slot-scope="scope">
-              <span v-if="scope.row.y === 1">是</span>
-              <span v-else-if="scope.row.y === 2">否</span>
-              <span v-else @click="moke(scope)">填写物流单号</span>
+              {{scope.row.invoiceSendOut}}
+              <span v-if="scope.row.invoiceSendOut == '填写物流单号'" @click="moke(scope.row.id)">{{scope.row.invoiceSendOut}}</span>
+              <span v-else>{{scope.row.invoiceSendOut}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            prop="logisticsNum"
             align="center"
             label="物流单号">
           </el-table-column>
           <el-table-column
+            prop="paymentVoucher"
             align="center"
             label="是否已打款"
             width="100">
-            <template slot-scope="scope">
-              <span v-if="scope.row.state === 1" >是</span>
-              <span v-else>否</span>
-            </template>
           </el-table-column>
         </el-table>
       </template>
@@ -86,7 +83,7 @@
           :current-page.sync="currentPage1"
           :page-size="10"
           layout="total, prev, pager, next"
-          :total="1000">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -98,10 +95,10 @@
         :visible.sync="shopShow"
         width="30%">
         <div class="uers_dialog">
-          <el-input class="sjdf" v-model="input" placeholder="请输入物流公司"></el-input>
-          <el-input class="sjdf" v-model="input" placeholder="请输入物流单号"></el-input>
-          <el-button type="primary">确定</el-button>
-          <el-button type="primary" plain>取消</el-button>
+          <el-input class="sjdf" v-model="shbfev.logisticsCompany" placeholder="请输入物流公司"></el-input>
+          <el-input class="sjdf" v-model="shbfev.logisticsNum" placeholder="请输入物流单号"></el-input>
+          <el-button type="primary" @click="kjdvifjiv">确定</el-button>
+          <el-button type="primary" plain  @click="sdfgbgb">取消</el-button>
         </div>
       </el-dialog>
     </div>
@@ -109,30 +106,91 @@
 </template>
 
 <script>
+import { InterfaceFinance, settlementstore, SettlementListstore, SettlementUpdate } from '../../../api/system'
 export default {
   data () {
     return {
+      xinxi: '',
       currentPage1: 1,
       shopShow: false,
       shopxContent: [],
+      from: {
+        status: '',
+        isSettle: '',
+        pageNo: '1',
+        pageSize: '10'
+      },
+      shbfev: {
+        id: '',
+        logisticsCompany: '',
+        logisticsNum: ''
+      },
+      total: 0,
       list: [
         { tradeParentId: '自取订单', gmtCreate: '2020-11-11', totalGoodsNum: '18321201141', shopName: '上海市青浦区华新镇华志路1685号', coreName: '已取货' }
       ]
     }
   },
   mounted () {
+    this.getList()
   },
   methods: {
+    // 获取信息
+    getList () {
+      InterfaceFinance().then(data => {
+        console.log('信息', data)
+        this.xinxi = data
+      })
+      SettlementListstore(this.from).then(data => {
+        console.log('结算列表', data)
+        this.list = data
+        this.total = data.total
+      })
+    },
+    // 申请结算
+    settlement () {
+      if (this.xinxi.toBeAmount > 0) {
+        settlementstore().then(data => {
+          console.log('申请结算', data)
+          this.$message({
+            message: '结算成功',
+            type: 'success'
+          })
+        })
+      } else {
+        this.$message.error('可结算金额不足')
+      }
+    },
     // 分页
     handleSizeChange (val) {
-      console.log(val)
+      this.from.pageSize = val
+      this.getList()
     },
     handleCurrentChange (val) {
-      console.log(val)
+      this.from.pageNo = val
+      this.getList()
     },
     // // 填写物流单号
-    moke () {
+    moke (id) {
       this.shopShow = !this.shopShow
+      this.shbfev.id = id
+    },
+    kjdvifjiv () {
+      SettlementUpdate(this.shbfev).then(data => {
+        this.$message({
+          message: '修改成功',
+          type: 'success'
+        })
+        this.sdfgbgb()
+      })
+    },
+    sdfgbgb () {
+      this.shopShow = !this.shopShow
+      this.shbfev = {
+        id: '',
+        logisticsCompany: '',
+        logisticsNum: ''
+      }
     }
   }
 }

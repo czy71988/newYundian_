@@ -22,7 +22,6 @@ mocks.push({
   url: /\/product\/query\/page*/,
   type: 'get',
   template: (options) => {
-    console.log(JSON.stringify(options))
     const { pageNo, pageSize } = options.params
     const goodsList = goodsListRes.data.records
     const total = goodsListRes.data.total

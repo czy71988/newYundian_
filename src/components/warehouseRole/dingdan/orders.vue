@@ -14,17 +14,8 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
-        <span>选择中心仓：</span>
-        <el-select v-model="form.coreShopId" placeholder="请选择" @change="skjfergs(form.coreShopId, 1)">
-          <el-option
-            v-for="item in zhongxinList"
-            :key="item.id"
-            :label="item.title"
-            :value="item.id">
-          </el-option>
-        </el-select>
         <span>选择网点：</span>
-        <el-select v-model="form.outletsShopId" placeholder="请选择" @change="skjfergs(form.outletsShopId, 2)">
+        <el-select v-model="form.outletsShopId" placeholder="请选择" @change="skjfergs(form.outletsShopId)">
           <el-option
             v-for="item in wangdianList"
             :key="item.id"
@@ -237,7 +228,8 @@ export default {
         pageSize: '10',
         coreShopId: '',
         outletsShopId: '',
-        storeShopId: ''
+        storeShopId: '',
+        logisticsType: 2
       }
       this.getlist()
     },
@@ -249,6 +241,7 @@ export default {
     },
     // 获取列表
     getlist () {
+      this.form.coreShopId = sessionStorage.getItem('id')
       InterfaceOrderList(this.form).then(data => {
         // console.log(data)
         this.tableData = data
@@ -281,21 +274,17 @@ export default {
     // 获取筛选中心仓
     getzhongxincangList () {
       InterfaceDropdownList({
-        type: 1
+        type: 3
       }).then(data => {
-        this.zhongxinList = data
+        this.wangdianList = data
       })
     },
     // 获取筛选网点
-    skjfergs (a, b) {
+    skjfergs (a) {
       InterfaceDropdownlastList({
         parentId: a
       }).then(data => {
-        if (b === 1) {
-          this.wangdianList = data
-        } else {
-          this.mwndianList = data
-        }
+        this.mwndianList = data
       })
     }
   }

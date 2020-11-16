@@ -33,7 +33,7 @@ export default {
   data () {
     return {
       form: {
-        phone: '12345678904',
+        phone: '11111111111',
         identifyCode: '123456'
       },
       btntxt: '获取验证码',
@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     login () {
-      // yundianLogin({}).then(data => {})
       this.$store.dispatch('login', this.form)
     },
     onGoReg () {

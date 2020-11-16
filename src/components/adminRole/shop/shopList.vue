@@ -57,14 +57,14 @@
             align="center"
             label="商品标签">
           </el-table-column> -->
-          <el-table-column
+          <!-- <el-table-column
             prop="storeHouse"
             align="center"
             label="所在仓位置">
             <template slot-scope="scope">
               <span>{{scope.row.storeHouse === 1 ? '门店' : (scope.row.storeHouse === 2 ? '中心仓库' : '')}}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="price"
             align="center"
@@ -183,7 +183,7 @@
                 <img width="100%" :src="dialogImageUrl.url" alt="">
               </el-dialog>
             </el-form-item>
-            <el-form-item label="所在仓位置：">
+            <!-- <el-form-item label="所在仓位置：">
               <el-select v-model="form.storeHouse" placeholder="请选择活动区域">
                 <el-option
                   v-for="item in fghty"
@@ -192,9 +192,9 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="所属类目：">
-              <el-select v-model="form.categoryId" placeholder="请选择活动区域">
+              <el-select v-model="form.categoryId" placeholder="请选择所属类目">
                 <el-option
                   v-for="item in ShopStyle"
                   :key="item.id"
@@ -207,10 +207,20 @@
               <el-input v-model="form.price"></el-input>
             </el-form-item>
             <el-form-item label="库存数量：">
-              <el-input v-model="form.amount"></el-input>
+              <el-input v-model="form.submitAmount"></el-input>
             </el-form-item>
             <el-form-item label="商品重量：">
               <el-input v-model="form.weight"></el-input>
+            </el-form-item>
+            <el-form-item label="商家来源：">
+              <el-select v-model="form.businessId" placeholder="请选择商家来源">
+                <el-option
+                  v-for="item in McList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">{{sdbgg}}</el-button>
@@ -224,9 +234,9 @@
 </template>
 
 <script>
-import BigImg from '../../common/map-selector/BigImg'
-import { InterfaceAddshopdetails, InterfaceshopSohp, InterfaceGoodsShelves, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle } from '@/api/shop'
-import { deleteElementByValue } from '@/utils/khg'
+import BigImg from './BigImg'
+import { InterfaceAddshopdetails, InterfaceshopSohp, InterfaceGoodsShelves, Interfaceshopdetails, InterfaceGoodsUpdate, InterfaceGoodsStyle, InterfaceMerchantList } from '../../../api/shop'
+import { deleteElementByValue } from '../../../utils/khg'
 export default {
   data () {
     return {
@@ -252,8 +262,9 @@ export default {
         storeHouse: '',
         categoryId: '',
         price: '',
-        amount: '',
-        weight: ''
+        submitAmount: '',
+        weight: '',
+        businessId: ''
       },
       // 请求列表参数
       getform: {
@@ -273,7 +284,8 @@ export default {
       urls: [],
       total: 0,
       list: '',
-      ShopStyle: []
+      ShopStyle: [],
+      McList: []
     }
   },
   props: ['pagedata'],
@@ -318,11 +330,14 @@ export default {
       this.shopShow = !this.shopShow
     },
 
-    // 获取类目下拉列表
+    // 获取类目下拉列表/商家下拉列表
     getStyle () {
       InterfaceGoodsStyle({}).then(data => {
         this.ShopStyle = data
-        console.log(data)
+      })
+      InterfaceMerchantList({}).then(data => {
+        console.log('商家来源', data)
+        this.McList = data
       })
     },
 

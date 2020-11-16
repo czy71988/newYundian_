@@ -6,18 +6,51 @@
       <span>财务结算</span>
     </div>
 
+      <div class="DataDisplayBoard">
+        <div>
+          <p>{{xinxi.todayPrice}}</p>
+          <p>今日收益</p>
+        </div>
+        <div>
+          <p>{{xinxi.monthPrice}}</p>
+          <p>本月收益</p>
+          <span>
+            <el-select @change="yuefenclick" v-model="from.month" placeholder="请选择月份">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </span>
+        </div>
+        <div>
+          <p>{{xinxi.yearPrice}}</p>
+          <p>今年收益</p>
+          <span>
+            <el-select @change="yuefenclick" v-model="from.year" placeholder="请选择年份">
+              <el-option
+                v-for="item in options2"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </span>
+        </div>
+      </div>
     <div class="top">
-      <el-date-picker
-        v-model="value1"
+       <el-date-picker
+        v-model="time"
+        value-format="timestamp"
         type="daterange"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期">
       </el-date-picker>
-      <el-input class="input" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button type="primary" plain>搜索</el-button>
+      <el-button @click="sousuo" type="primary" plain>搜索</el-button>
       <el-button type="info" plain>重置</el-button>
-      <el-button type="success" plain>导出</el-button>
     </div>
 
     <!-- 表格部分 -->
@@ -34,15 +67,27 @@
           </el-table-column>
           <el-table-column
             align="center"
-            label="操作时间">
+            label="订单类型">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate}}</span>
+              <span>{{scope.row.orderType === 1 ? '订货订单' : (scope.row.orderType === 2 ? '普通订单' : '拨货订单')}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
             align="center"
-            label="拨货数量">
+            label="下单时间">
+            <template slot-scope="scope">
+              <span>{{scope.row.gmtCreate.substring(0, 19)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="totalGoodsPrice"
+            align="center"
+            label="实付金额">
+          </el-table-column>
+          <el-table-column
+            prop="buyMobile"
+            align="center"
+            label="买家手机号">
           </el-table-column>
           <el-table-column
             prop="shopName"
@@ -50,9 +95,9 @@
             label="所属门店">
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            prop="utletsoName"
             align="center"
-            label="所属中心">
+            label="所属网点">
           </el-table-column>
           <el-table-column
             align="center"
@@ -92,18 +137,18 @@
               <li>名称</li>
               <li>价格</li>
               <li>数量</li>
-              <li>重量</li>
+              <!-- <li>重量</li> -->
               <li>标签</li>
             </ul>
             <ul class="uers_logs">
               <li v-for="item in shopxContent" :key="item.id">
-                <span>1</span>
-                <span><img src="@/assets/微信图片_20201016132405.jpg" alt=""></span>
-                <span>可视对讲你哥哥</span>
-                <span>78</span>
-                <span>2000</span>
-                <span>200</span>
-                <span>当日达</span>
+                <span>{{item.itemId}}</span>
+                <span><img :src="item.itemImg" alt=""></span>
+                <span>{{item.itemTitle}}</span>
+                <span>{{item.originalPrice}}</span>
+                <span>{{item.itemNum}}</span>
+                <!-- <span>{{200}}</span> -->
+                <span>{{item.label}}</span>
               </li>
             </ul>
           </div>
@@ -114,19 +159,96 @@
 </template>
 
 <script>
+import { SettlementStoreRevenue } from '../../api/system'
+import { InterfaceOrderList, InterfaceQueryOrderList } from '../../api/order'
 export default {
   data () {
     return {
+      currentPage1: 1,
       shopxContent: [],
-      list: []
+      list: [],
+      options: [
+        { value: '1', label: '1月份' },
+        { value: '2', label: '2月份' },
+        { value: '3', label: '3月份' },
+        { value: '4', label: '4月份' },
+        { value: '5', label: '5月份' },
+        { value: '6', label: '6月份' },
+        { value: '7', label: '7月份' },
+        { value: '8', label: '8月份' },
+        { value: '9', label: '9月份' },
+        { value: '10', label: '10月份' },
+        { value: '11', label: '11月份' },
+        { value: '12', label: '12月份' }
+      ],
+      options2: [
+        { value: '2020', label: '2020' },
+        { value: '2021', label: '2021' },
+        { value: '2022', label: '2022' },
+        { value: '2023', label: '2023' },
+        { value: '2024', label: '2024' }
+      ],
+      from: {
+        coreShopId: sessionStorage.getItem('id'),
+        today: '',
+        month: '',
+        year: ''
+      },
+      outfrom: {
+        orderType: 2,
+        beginCreTime: '',
+        endCreTime: '',
+        pageNo: '1',
+        pageSize: '10'
+      },
+      xinxi: '',
+      time: '',
+      shopShow: false
     }
   },
   mounted () {
+    this.getxinxi()
+    this.getList()
   },
   methods: {
     // 分页
-    handleSizeChange (val) {},
-    handleCurrentChange (val) {}
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getList()
+    },
+    handleCurrentChange (val) {
+      this.pageNo = val
+      this.getList()
+    },
+    getxinxi () {
+      SettlementStoreRevenue(this.from).then(data => {
+        this.xinxi = data
+      })
+    },
+    yuefenclick () {
+      this.getxinxi()
+    },
+    getList () {
+      InterfaceOrderList(this.outfrom).then(data => {
+        this.list = data
+      })
+    },
+    sousuo () {
+      this.outfrom.beginCreTime = this.time[0]
+      this.outfrom.endCreTime = this.time[1]
+      this.getList()
+    },
+    bianji (id) {
+      const orderId = id
+      InterfaceQueryOrderList({
+        orderId: orderId
+      }).then(data => {
+        // this.Content = data[0]
+        // this.time = this.Content.gmtCreate
+        this.shopxContent = this.Content.adminGoodsList
+      })
+      this.shopShow = !this.shopShow
+    }
 
   }
 }
@@ -208,6 +330,16 @@ export default {
       }
     }
   }
+  .DataDisplayBoard {
+    .el-select {
+      border: none  !important;
+    }
+    .el-input__inner {
+      width: 100px;
+      // margin-right: 10px;
+      padding: 0;
+    }
+  }
 </style>
 
 <style lang="less" scoped>
@@ -219,6 +351,29 @@ export default {
       .input {
         margin: 0 10px;
         width: 200px;
+      }
+    }
+    .DataDisplayBoard {
+      display: flex;
+      margin-bottom: 20px;
+      div {
+        height: 100px;
+        flex: 1;
+        border: 1px solid #e3e3e3;
+        position: relative;
+        span {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+        }
+        p {
+          text-align: center;
+          // line-height: ;
+        }
+        p:first-child {
+          font-size: 24px;
+          line-height: 70px;
+        }
       }
     }
     .shopType_top {

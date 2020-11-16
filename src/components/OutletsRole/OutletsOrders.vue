@@ -1,30 +1,60 @@
 <template>
-  <div class="shopType">
-    <!-- 商品类目创建头部 -->
-    <div class="shopType_top">
-      <span>· 订单管理</span>
-      <span>配送订单</span>
+  <div class="shopList">
+    <!-- 头部部分 -->
+    <div class="BanNer_top">
+      <p>· 订单管理  配送订单列表</p>
+      <!-- <div @click="chuangjian">创建Banner</div> -->
+      <div class="BanNer_top_p">
+        <span>创建时间：</span>
+        <el-date-picker
+          v-model="dkjfg"
+          type="daterange"
+          value-format="timestamp"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+        <!-- <span>选择中心仓：</span>
+        <el-select v-model="form.coreShopId" placeholder="请选择" @change="skjfergs(form.coreShopId, 1)">
+          <el-option
+            v-for="item in zhongxinList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <span>选择网点：</span>
+        <el-select v-model="form.outletsShopId" placeholder="请选择" @change="skjfergs(form.outletsShopId, 2)">
+          <el-option
+            v-for="item in wangdianList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id">
+          </el-option>
+        </el-select> -->
+        <span>选择门店：</span>
+        <el-select v-model="form.storeShopId" placeholder="请选择">
+          <el-option
+            v-for="item in mwndianList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <span>订单号：</span>
+        <el-input v-model="form.orderId" placeholder="请输入内容"></el-input>
+        <div>
+          <span @click="qingkong">重置</span>
+          <span @click="sousuo">搜索</span>
+          <span @click="Eexport">批量导出</span>
+        </div>
+      </div>
     </div>
-
-    <div class="top">
-      <el-date-picker
-        v-model="value1"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期">
-      </el-date-picker>
-      <el-input class="input" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button type="primary" plain>搜索</el-button>
-      <el-button type="info" plain>重置</el-button>
-      <el-button type="success" plain>导出</el-button>
-    </div>
-
-    <!-- 表格部分 -->
-    <div class="shopType_content">
+    <!-- 内容部分 -->
+    <div class="BanNer_content">
       <template>
         <el-table
-          :data="list"
+          :data="tableData"
           stripe
           style="width: 100%">
           <el-table-column
@@ -36,35 +66,52 @@
             align="center"
             label="下单时间">
             <template slot-scope="scope">
-              <span>{{scope.row.gmtCreate}}</span>
+              <span>{{scope.row.gmtCreate.substring(0, 19)}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="totalGoodsNum"
+            prop="totalGoodsPrice"
             align="center"
-            label="实付金额">
+            label="商品金额">
           </el-table-column>
           <el-table-column
-            prop="shopName"
+            prop="deliveryFee"
             align="center"
-            label="收货人地址">
+            label="配送费">
           </el-table-column>
           <el-table-column
-            prop="coreName"
+            align="center"
+            label="商品总重">
+            <template slot-scope="scope">
+              <span>{{scope.row.deliveryFee}}/g</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="orderStatusName"
             align="center"
             label="订单状态">
           </el-table-column>
           <el-table-column
+            prop="shopName"
+            align="center"
+            label="所属门店">
+          </el-table-column>
+          <el-table-column
+            prop="utletsoName"
+            align="center"
+            label="所属网点">
+          </el-table-column>
+          <el-table-column
             prop="coreName"
             align="center"
-            label="买家手机号">
+            label="所属中心">
           </el-table-column>
           <el-table-column
             align="center"
             label="查看详情"
-            width="100">
+            width="80">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>点击查看商品</span>
+              <span class="sdreg" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>详情</span>
             </template>
           </el-table-column>
         </el-table>
@@ -79,38 +126,51 @@
           :current-page.sync="currentPage1"
           :page-size="10"
           layout="total, prev, pager, next"
-          :total="100">
+          :total="total">
         </el-pagination>
       </div>
     </div>
-    <!-- dialog弹窗 -->
-
-    <!-- 弹窗部分 -- 商品创建编辑 -->
-    <div class="shopType_diagio">
+    <!-- 弹窗部分 -- 编辑/创建 -->
+    <div class="mendian_diagio">
       <el-dialog
-        :visible.sync="shopShow">
+        :visible.sync="dialogVisible">
+        <p class="sdsd">订单详情</p>
         <div class="uers_dialog">
+          <p class="uers_p">
+            <span></span>
+            <span>订单信息</span>
+          </p>
+          <p class="uers_p1">
+            <span style="width:100%">订单号：{{Content.tradeParentId}}</span>
+            <span style="width:100%">订单状态：{{Content.orderStatus | orderStatusFilter}}</span>
+            <span style="width:100%">实付金额：{{Content.totalGoodsPrice}}元</span>
+            <span style="width:100%">收货人姓名：{{ContentS.receiverName}}</span>
+            <span style="width:100%">收货人手机号：{{ContentS.receiverPhone}}</span>
+            <span style="width:100%">收货人地址：{{ContentS.receiverAddress}}{{ContentS.houseNumber}}</span>
+            <span style="width:100%">所属门店：{{Content.shopName}}</span>
+            <span style="width:100%">所属网点：{{Content.utletsoName}}</span>
+            <span style="width:100%">所属中心：{{Content.coreName}}</span>
+            <span style="width:100%">商品总重：{{Content.coreName}}/g</span>
+          </p>
+          <p class="uers_p">
+            <span></span>
+            <span>商品信息</span>
+          </p>
           <div>
             <ul class="uers_log">
               <li>商品ID</li>
               <li>图片</li>
               <li>名称</li>
-              <li>类目</li>
               <li>价格</li>
               <li>数量</li>
-              <li>重量</li>
-              <li>标签</li>
             </ul>
             <ul class="uers_logs">
               <li v-for="item in shopxContent" :key="item.id">
-                <span>1</span>
-                <span><img src="@/assets/微信图片_20201016132405.jpg" alt=""></span>
-                <span>可视对讲你哥哥</span>
-                <span>酒水</span>
-                <span>89</span>
-                <span>2000</span>
-                <span>200</span>
-                <span>当日达</span>
+                <span>{{item.itemId}}</span>
+                <span><img :src="item.itemImg" alt=""></span>
+                <span>{{item.itemTitle}}</span>
+                <span>{{item.originalPrice}}</span>
+                <span>{{item.itemNum}}</span>
               </li>
             </ul>
           </div>
@@ -121,27 +181,145 @@
 </template>
 
 <script>
+import { InterfaceOrderList, InterfaceQueryOrderList } from '@/api/order'
+import { InterfaceDropdownList } from '@/api/system'
 export default {
   data () {
     return {
+      tableData: [],
+      dialogVisible: false,
+      dialogVisible1: false,
+      currentPage1: 1,
+
+      form: {
+        orderType: 2,
+        orderId: '',
+        orderStatus: '',
+        beginCreTime: '',
+        endCreTime: '',
+        pageNo: '1',
+        pageSize: '10',
+        coreShopId: '',
+        outletsShopId: '',
+        storeShopId: '',
+        logisticsType: 2
+      },
+      dkjfg: [],
+      Content: {},
       shopxContent: [],
-      list: []
+      ContentS: [],
+      total: 0,
+      zhongxinList: [],
+      wangdianList: [],
+      mwndianList: []
     }
   },
   mounted () {
+    this.getlist()
+    this.skjfergs()
   },
   methods: {
+    // 批量操作按钮弹出选择框
+    Eexport () {
+      const api = 'https://test.zk020.cn/youmi-fresh/admin/order/adminExcelOrderInfo?'
+      const url = api + 'orderType=2' + '&logisticsType=2' + '&orderId=' + this.form.orderId + '&orderStatus=' + '&beginCreTime=' + this.form.beginCreTime + '&endCreTime=' + this.form.endCreTime + '&coreShopId=' + this.form.coreShopId + '&outletsShopId=' + this.form.outletsShopId + '&storeShopId=' + this.form.storeShopId
+      window.location.href = url
+    },
+    // 清除
+    qingkong () {
+      this.form = {
+        orderType: 2,
+        orderId: '',
+        orderStatus: '',
+        beginCreTime: '',
+        endCreTime: '',
+        pageNo: '1',
+        pageSize: '10',
+        coreShopId: '',
+        outletsShopId: '',
+        storeShopId: '',
+        logisticsType: 2
+      }
+      this.getlist()
+    },
+    // 搜索
+    sousuo () {
+      this.form.beginCreTime = this.dkjfg[0]
+      this.form.endCreTime = this.dkjfg[1]
+      this.getlist()
+    },
+    // 获取列表
+    getlist () {
+      this.form.outletsShopId = sessionStorage.getItem('id')
+      InterfaceOrderList(this.form).then(data => {
+        // console.log(data)
+        this.tableData = data
+        this.total = data.length
+        // console.log(data)
+      })
+    },
     // 分页
-    handleSizeChange (val) {},
-    handleCurrentChange (val) {}
-
+    handleSizeChange (val) {
+      this.form.pageSize = val
+      this.getlist()
+    },
+    handleCurrentChange (val) {
+      this.form.pageNo = val
+      this.getlist()
+    },
+    // 编辑按钮
+    bianji (id) {
+      const orderId = id
+      InterfaceQueryOrderList({
+        orderId: orderId
+      }).then(data => {
+        this.Content = data[0]
+        this.ContentS = this.Content.addressList[0]
+        this.shopxContent = this.Content.adminGoodsList
+        console.log(this.ContentS)
+      })
+      this.dialogVisible = !this.dialogVisible
+    },
+    // 获取筛选中心仓
+    // getzhongxincangList () {
+    //   InterfaceDropdownList({
+    //     type: 1
+    //   }).then(data => {
+    //     this.zhongxinList = data
+    //   })
+    // },
+    // 获取筛选网点
+    skjfergs (a, b) {
+      InterfaceDropdownList({
+        type: 2
+      }).then(data => {
+        this.mwndianList = data
+      })
+    }
   }
 }
 </script>
 
 <style lang="less">
-  .shopType {
-    .shopType_content {
+  .shopList {
+    .BanNer_top_p {
+      line-height: 20px;
+      text-align: left;
+      .el-input {
+        height: 30px;
+        display: inline-block;
+        width: 200px;
+        margin-right: 20px;
+        .el-input__icon {
+          line-height: 30px;
+        }
+      }
+      .el-input__inner {
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+    .BanNer_content {
       .el-table {
         line-height: 40px !important;
         border-radius: 6px 6px 0px 0px;
@@ -177,7 +355,8 @@ export default {
         background-color: #D7E5FB;
       }
     }
-    .shopType_diagio {
+
+    .mendian_diagio {
       .el-dialog {
         width: 500px;
         // height: 430px;
@@ -189,6 +368,21 @@ export default {
         .el-dialog__body {
           padding: 0;
           height: 100%;
+          .sdsd {
+            display: block;
+            font-size: 18px;
+            font-family: MicrosoftYaHei-Bold, MicrosoftYaHei;
+            font-weight: bold;
+            color: #FFFFFF;
+            line-height: 40px;
+            width: 500px;
+            height: 40px;
+            background: linear-gradient(249deg, rgba(255, 255, 255, 0.11) 0%, #164C92 100%);
+            border-radius: 8px 8px 0px 0px;
+            padding-left: 24px;
+            box-sizing: border-box;
+            text-align: left;
+          }
           .el-form {
             box-sizing: border-box;
             .el-form-item {
@@ -218,81 +412,65 @@ export default {
 </style>
 
 <style lang="less" scoped>
-  .shopType {
+  .shopList {
     padding: 0 15px;
     box-sizing: border-box;
-    .top {
-      margin-bottom: 20px;
-      .input {
-        margin: 0 10px;
-        width: 200px;
+    // ---------------------------
+    .BanNer_top {
+      position: relative;
+      // height: 90px;
+      .BanNer_top_p {
+        div {
+          margin-bottom: 40px;
+          text-align: center;
+          span {
+            display: inline-block;
+            width: 100px;
+            height: 35px;
+            background: #2B80FD;
+            border-radius: 18px;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: #FFFFFF;
+            line-height: 35px;
+            text-align: center;
+          }
+          span:last-child {
+            background: #FF8C14;
+            margin-left: 40px;
+          }
+          span:first-child {
+            background: #ffffff;
+            color: #2B80FD;
+            border: 1px solid #2B80FD;
+            margin-right: 40px;
+          }
+        }
       }
-    }
-    .shopType_top {
-      line-height: 92px;
-      span {
+      p {
+        text-align: left;
+        line-height: 90px;
         font-size: 18px;
         font-family: MicrosoftYaHei-Bold, MicrosoftYaHei;
         font-weight: bold;
         color: #2B80FD;
-      }
-      span:last-child {
-        font-size: 18px;
-        font-family: MicrosoftYaHei;
-        color: #2B80FD;
-        font-weight: 400;
-        margin-left: 30px;
-      }
-    }
-    .shopType_home_top {
-      ul {
-        width: 100%;
-        height: 100px;
-        list-style: none;
-        display: flex;
-        margin-bottom: 20px;
-        background: linear-gradient(249deg, rgba(255, 255, 255, 0.11) 0%, #164C92 100%);
-        li {
-          flex: 1;
-          text-align: center;
-          color: #e3e3e3;
-          border: 1px solid #e3e3e3;
-          p {
-            font-size: 22px;
-            line-height: 60px;
-            font-weight: 400;
-          }
-          p:last-child {
-            font-size: 18px;
-            line-height: 30px;
-          }
-        }
-        li:last-child {
-          color: rgb(77, 75, 75);
+        span {
+          display: inline-block;
+          width: 7px;
+          height: 7px;
+          border-radius: 4px;
+          background: #2B80FD;
+          margin: 0 10px;
         }
       }
     }
-    .shopType_content {
-      .sdfsgerg {
-        width: 30px;
-        height: 30px;
-      }
-      .shopType_span1 {
+    // -----------------------------
+    .BanNer_content {
+      margin-top: 10px;
+      .sdreg {
         font-size: 13px;
         font-family: MicrosoftYaHei;
         color: #2B80FD;
-        line-height: 17px;
-      }
-      .shopType_span2 {
-        font-size: 13px;
-        font-family: MicrosoftYaHei;
-        color: #2B80FD;
-        line-height: 17px;
-      }
-      .shopType_span22 {
-        font-size: 13px;
-        font-family: MicrosoftYaHei;
-        color: #FF8C14;
         line-height: 17px;
       }
     }
@@ -307,10 +485,36 @@ export default {
         float: right;
       }
     }
-    .shopType_diagio {
+    .mendian_diagio {
       .uers_dialog {
         padding: 10px;
         box-sizing: border-box;
+        .uers_p {
+          line-height: 37px;
+          span {
+            font-size: 13px;
+            font-family: MicrosoftYaHei-Bold, MicrosoftYaHei;
+            font-weight: bold;
+            color: #2B80FD;
+            margin-left: 5px;
+          }
+          span:first-child {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 2px;
+            background: #2B80FD;
+          }
+        }
+        .uers_p1 {
+          padding: 0 10px;
+          box-sizing: border-box;
+          span {
+            display: inline-block;
+            width: 50%;
+            line-height: 25px;
+          }
+        }
         div {
           .uers_log {
             display: flex;
@@ -352,21 +556,6 @@ export default {
               }
             }
           }
-        }
-      }
-    }
-  }
-  .chuangjian_shop_dialog {
-    ul {
-      list-style: none;
-      li {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        margin: 5px;
-        img {
-          width: 50px;
-          height: 50px;
         }
       }
     }
