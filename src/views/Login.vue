@@ -5,9 +5,9 @@
       <div class="Login_divs">
         <span>手机号：</span>
         <span>
-          <!-- <el-input v-model="form.phone" placeholder="请输入账号">
-          </el-input> -->
-          <el-select v-model="form.phone" placeholder="请选择">
+          <el-input v-if="1" v-model="form.phone" placeholder="请输入账号">
+          </el-input>
+          <el-select v-else v-model="form.phone" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -44,8 +44,8 @@ export default {
   data () {
     return {
       form: {
-        phone: '11111111111',
-        identifyCode: '123456'
+        phone: '',
+        identifyCode: ''
       },
       btntxt: '获取验证码',
       time: '',
