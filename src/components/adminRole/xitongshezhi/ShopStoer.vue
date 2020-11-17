@@ -5,7 +5,7 @@
       <p>· 系统设置  商家管理</p>
       <div class="BanNer_top_p">
         <span>商家名称：</span>
-        <el-input v-model="from.title" placeholder="请输入内容"></el-input>
+        <el-input v-model="from.name" placeholder="请输入内容"></el-input>
         <span>手机号：</span>
         <el-input v-model="from.phone" placeholder="请输入内容"></el-input>
         <div>
@@ -27,12 +27,12 @@
             label="商家ID">
           </el-table-column>
           <el-table-column
-            prop="managerName"
+            prop="name"
             align="center"
             label="姓名">
           </el-table-column>
           <el-table-column
-            prop="phone"
+            prop="wxNum"
             align="center"
             label="微信号">
           </el-table-column>
@@ -42,7 +42,7 @@
             label="手机号码">
           </el-table-column>
           <el-table-column
-            prop="phone"
+            prop="brand"
             align="center"
             label="品牌名称">
           </el-table-column>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { InterfaceShop } from '@/api/system'
+import { BusinessManagement } from '@/api/shop'
 export default {
   data () {
     return {
@@ -91,12 +91,8 @@ export default {
       from: {
         pageNo: '1',
         pageSize: '10',
-        type: 2,
-        title: '',
-        id: '',
-        phone: '',
-        parentId: '',
-        state: ''
+        name: '',
+        phone: ''
       },
       total: 0
     }
@@ -109,8 +105,8 @@ export default {
       this.getlist()
     },
     getlist () {
-      InterfaceShop(this.from).then(data => {
-        console.log(data)
+      BusinessManagement(this.from).then(data => {
+        console.log('商家管理列表', data)
         this.tableData = data.records
         this.total = data.total
       })

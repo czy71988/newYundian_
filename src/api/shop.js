@@ -110,3 +110,13 @@ export function InterfaceMerchantList (data, catchConfig) {
   }, catchConfig)
   return req
 }
+
+// 商家管理页面
+export function BusinessManagement (data, catchConfig) {
+  const req = request({
+    method: 'get',
+    url: '/youmi-fresh/admin/user/query/page',
+    data
+  }, catchConfig)
+  return req
+}
