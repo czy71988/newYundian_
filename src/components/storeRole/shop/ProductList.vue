@@ -109,7 +109,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="onLookDetail(scope.row)"><i class="el-icon-edit"></i>查看详情</span>
+              <span style="cursor: pointer;" class="Banner_span1" @click="onLookDetail(scope.row)"><i class="el-icon-edit"></i>查看详情</span>
             </template>
           </el-table-column>
         </el-table>

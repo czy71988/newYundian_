@@ -2,37 +2,44 @@
   <div class="Login">
     <div class="Login_div">
       <p>中通云店·后台管理系统</p>
-      <div class="Login_divs">
-        <span>手机号：</span>
-        <span>
-          <el-input v-if="1" v-model="form.phone" placeholder="请输入账号">
-          </el-input>
-          <el-select v-else v-model="form.phone" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </span>
-      </div>
-      <div class="Login_divs">
-        <span>验证码：</span>
-        <span>
-          <el-input placeholder="请输入内容" v-model="form.identifyCode">
-          </el-input>
-          <div class="shgfhir" slot="append" @click="mokeOUt">{{btntxt}}</div>
-        </span>
-      </div>
-      <div class="row">
-        <div>登录即同意服务条款</div>
-        <div @click="onGoReg"><span class="link-wrap">商家用户请先</span><span class="link">注册</span></div>
-      </div>
-      <div class="Login_btn">
-        <span @click="login">登录</span>
-      </div>
+      <div class="nbvbojgo">
+        <div class="Login_divs">
+          <span>手机号：</span>
+          <span>
+            <el-input v-if="1" v-model="form.phone" placeholder="请输入账号">
+            </el-input>
+            <!-- <el-select v-else v-model="form.phone" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select> -->
+          </span>
+        </div>
+        <div class="Login_divs">
+          <span>验证码：</span>
+          <span>
+            <el-input placeholder="请输入内容" v-model="form.identifyCode">
+            </el-input>
+            <div class="shgfhir" slot="append" style="cursor: pointer;" @click="mokeOUt">{{btntxt}}</div>
+          </span>
+        </div>
+        <div class="row">
+          <!-- <div>登录即同意服务条款</div> -->
+          <span class="sjknfoov">
+            <!-- 11 -->
+          </span>
+          <span class="link-wrap" @click="onGoReg">商家用户请先
+            <span class="link">注册</span>
+          </span>
 
+        </div>
+        <div class="Login_btn">
+          <span @click="login" style="cursor: pointer;">登录</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -49,14 +56,14 @@ export default {
       },
       btntxt: '获取验证码',
       time: '',
-      disabled: false,
-      options: [
-        { id: 1, value: '12345678901', label: '商家账号' },
-        { id: 2, value: '12345678902', label: '中心仓' },
-        { id: 3, value: '12345678903', label: '网点' },
-        { id: 4, value: '12345678904', label: '门店' },
-        { id: 5, value: '11111111111', label: '运营' }
-      ]
+      disabled: false
+      // options: [
+      //   { id: 1, value: '12345678901', label: '商家账号' },
+      //   { id: 2, value: '12345678902', label: '中心仓' },
+      //   { id: 3, value: '12345678903', label: '网点' },
+      //   { id: 4, value: '12345678904', label: '门店' },
+      //   { id: 5, value: '11111111111', label: '运营' }
+      // ]
     }
   },
   created () {
@@ -99,16 +106,19 @@ export default {
 <style lang="less">
   .Login {
     .row {
-      display: flex;
-      // justify-content: space-between;
-      box-sizing: border-box;
-      .link {
-        &-wrap {
-          margin-left: 276px;
+      .sjknfoov {
+        display: inline-block;
+        width: 50%;
+        text-align: left;
+      }
+      .link-wrap {
+        display: inline-block;
+        width: 50%;
+        text-align: right;
+        .link {
+          color: blue;
+          cursor: pointer;
         }
-        text-decoration: underline;
-        color: blue;
-        cursor: pointer;
       }
     }
     .Login_div {
@@ -152,6 +162,9 @@ export default {
       width: 50%;
       float: right;
       margin-top: 200px;
+      .nbvbojgo {
+        width: 546px;
+      }
       p {
         font-size: 36px;
         font-family: MicrosoftYaHei-Bold, MicrosoftYaHei;

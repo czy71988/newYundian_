@@ -9,8 +9,8 @@
         <span>手机号：</span>
         <el-input v-model="from.phone" placeholder="请输入内容"></el-input>
         <div>
-          <span @click="sousupo">搜索</span>
-          <span>批量导出</span>
+          <span style="cursor: pointer;" @click="sousupo">搜索</span>
+          <span style="cursor: pointer;">批量导出</span>
         </div>
       </div>
     </div>
@@ -65,8 +65,8 @@
     </div>
     <!-- 分页 -->
     <div class="bottom_bottom">
-      <span class="bottom_q"><i class="el-icon-download"></i>批量导出</span>
-      <span class="bottom_q"><i class="el-icon-upload2"></i>批量导入</span>
+      <span style="cursor: pointer;" class="bottom_q"><i class="el-icon-download"></i>批量导出</span>
+      <span style="cursor: pointer;" class="bottom_q"><i class="el-icon-upload2"></i>批量导入</span>
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"

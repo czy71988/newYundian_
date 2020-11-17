@@ -17,9 +17,9 @@
           </el-option>
         </el-select>
         <div>
-          <el-button type="primary" round  @click="sousuo">搜索</el-button>
-          <el-button type="info" round>重置</el-button>
-          <el-button type="warning" round>导出</el-button>
+          <el-button style="cursor: pointer;" type="primary" round  @click="sousuo">搜索</el-button>
+          <el-button style="cursor: pointer;" type="info" round>重置</el-button>
+          <el-button style="cursor: pointer;" type="warning" round>导出</el-button>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
                 :src="xiangqingtu[0]"
                 :preview-src-list="xiangqingtu">
               </el-image>
-              <span v-else @click="mokedetailsUrls(scope.row.id)">点击查看详情图</span>
+              <span v-else @click="mokedetailsUrls(scope.row.id)" style="cursor: pointer;">点击查看详情图</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -111,7 +111,7 @@
             label="操作"
             width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.examine !== 1" class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
+              <span style="cursor: pointer;" v-if="scope.row.examine !== 1" class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>重新审核</span>
               <span v-else class="Banner_spanout"><i class="el-icon-edit"></i>重新审核</span>
             </template>
           </el-table-column>
@@ -120,7 +120,7 @@
     </div>
     <!-- 分页 -->
     <div class="bottom_bottom">
-      <div @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加商品</div>
+      <div style="cursor: pointer;" @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加商品</div>
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"

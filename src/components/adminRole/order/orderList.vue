@@ -34,8 +34,8 @@
         </el-option>
       </el-select>
 
-      <span class="skdjfrr" @click="sousuo">搜索</span>
-      <span class="skdjfrr1" @click="Eexport">导出</span>
+      <span style="cursor: pointer;" class="skdjfrr" @click="sousuo">搜索</span>
+      <span style="cursor: pointer;" class="skdjfrr1" @click="Eexport">导出</span>
     </div>
     <!-- 表格部分 -->
     <div class="shopType_content">
@@ -76,7 +76,7 @@
             label="查看详情"
             width="100">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
+              <span style="cursor: pointer;" class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
             </template>
           </el-table-column>
         </el-table>

@@ -110,7 +110,7 @@
             align="center"
             label="订单详情">
             <template slot-scope="scope">
-              <span @click="moke(scope.row)">查看订单详情</span>
+              <span style="cursor: pointer;" @click="moke(scope.row)">查看订单详情</span>
             </template>
           </el-table-column>
           <el-table-column

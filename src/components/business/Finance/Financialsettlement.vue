@@ -22,7 +22,7 @@
         </li>
         <li>
           <p>{{xinxi.toBeAmount}}</p>
-          <p>可结算金额 <span @click="settlement" style="margin-left: 10px; font-size: 12px; color: ">申请结算</span></p>
+          <p>可结算金额 <span @click="settlement" style="margin-left: 10px; font-size: 12px; cursor: pointer;">申请结算</span></p>
         </li>
       </ul>
     </div>
@@ -59,7 +59,7 @@
             align="center"
             label="发票是否寄出">
             <template slot-scope="scope">
-              <span v-if="scope.row.invoiceSendOut == '未寄出'" @click="moke(scope.row.id)">{{scope.row.invoiceSendOut}}</span>
+              <span style="cursor: pointer;" v-if="scope.row.invoiceSendOut == '未寄出'" @click="moke(scope.row.id)">{{scope.row.invoiceSendOut}}</span>
               <span v-else>{{scope.row.invoiceSendOut}}</span>
             </template>
           </el-table-column>

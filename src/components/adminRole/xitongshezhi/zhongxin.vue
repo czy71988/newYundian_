@@ -10,8 +10,8 @@
         <span>中心编号：</span>
         <el-input v-model="form.id" placeholder="请输入内容"></el-input>
         <div>
-          <span @click="sousuo">搜索</span>
-          <span>批量导出</span>
+          <span style="cursor: pointer;" @click="sousuo">搜索</span>
+          <span style="cursor: pointer;">批量导出</span>
         </div>
       </div>
     </div>
@@ -59,8 +59,8 @@
             label="操作"
             width="150">
             <template slot-scope="scope">
-              <span class="sdreg" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
-              <span class="sdreg" @click="CommodityManagement(scope.row.id, scope.row.parentId, scope.row.type)"><i class=""></i>商品管理</span>
+              <span style="cursor: pointer;" class="sdreg" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
+              <span style="cursor: pointer;" class="sdreg" @click="CommodityManagement(scope.row.id, scope.row.parentId, scope.row.type)"><i class=""></i>商品管理</span>
             </template>
           </el-table-column>
         </el-table>
@@ -68,9 +68,9 @@
     </div>
     <!-- 分页 -->
     <div class="bottom_bottom">
-      <span class="bottom_q" @click="news"><i class="el-icon-circle-plus-outline"></i>新增中心仓</span>
-      <span class="bottom_q"><i class="el-icon-download"></i>批量导出</span>
-      <span class="bottom_q"><i class="el-icon-upload2"></i>批量导入</span>
+      <span style="cursor: pointer;" class="bottom_q" @click="news"><i class="el-icon-circle-plus-outline"></i>新增中心仓</span>
+      <span style="cursor: pointer;" class="bottom_q"><i class="el-icon-download"></i>批量导出</span>
+      <span style="cursor: pointer;" class="bottom_q"><i class="el-icon-upload2"></i>批量导入</span>
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
@@ -114,8 +114,8 @@
                 </el-tooltip>
               </el-form-item>
               <p class="sdferg">
-                <span @click="dialogVisible = false">取消</span>
-                <span @click="over">提交</span>
+                <span style="cursor: pointer;" @click="dialogVisible = false">取消</span>
+                <span style="cursor: pointer;" @click="over">提交</span>
               </p>
             </el-form>
           </div>
@@ -126,8 +126,8 @@
           :visible.sync="dialogVisible1">
           <p class="dkfber">是否保存你所做的修改？</p>
           <p class="sdferg">
-            <span @click="dialogVisible1 = false">取消</span>
-            <span @click="tijiao">提交</span>
+            <span style="cursor: pointer;" @click="dialogVisible1 = false">取消</span>
+            <span style="cursor: pointer;" @click="tijiao">提交</span>
           </p>
         </el-dialog>
     </div>

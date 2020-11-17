@@ -3,7 +3,7 @@
     <!-- 头部部分 -->
     <div class="BanNer_top">
       <p>· 广告位配置<span class="dkfbgirgasd">Banner配置</span></p>
-      <div @click="chuangjian">创建Banner</div>
+      <div @click="chuangjian" style="cursor: pointer;">创建Banner</div>
     </div>
     <!-- 内容部分 -->
     <div class="BanNer_content">
@@ -58,8 +58,8 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
-              <span :class="scope.row.state === 1 ? 'Banner_span2' : 'Banner_span22'" @click="xiajia(scope.row)"><i class="el-icon-sort"></i>{{scope.row.state === 1 ? '下架' : '上架'}}</span>
+              <span style="cursor: pointer;" class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
+              <span style="cursor: pointer;" :class="scope.row.state === 1 ? 'Banner_span2' : 'Banner_span22'" @click="xiajia(scope.row)"><i class="el-icon-sort"></i>{{scope.row.state === 1 ? '下架' : '上架'}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -107,8 +107,8 @@
           </el-form-item>
         </el-form>
         <div class="chuangjian_dialog">
-          <span @click="dialogVisible = !dialogVisible">取消</span>
-          <span @click="chuangjianOver">{{Btnname}}</span>
+          <span style="cursor: pointer;" @click="dialogVisible = !dialogVisible">取消</span>
+          <span style="cursor: pointer;" @click="chuangjianOver">{{Btnname}}</span>
         </div>
       </el-dialog>
     </div>

@@ -7,7 +7,7 @@
     </div>
     <div class="top">
 
-      <span @click="sousuo">新增商品</span>
+      <span @click="sousuo" style="cursor: pointer;">新增商品</span>
     </div>
     <!-- 表格部分 -->
     <div class="shopType_content">
@@ -64,7 +64,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span @click="remove(scope.row)">删除</span>
+              <span style="cursor: pointer;" @click="remove(scope.row)">删除</span>
             </template>
           </el-table-column>
         </el-table>
@@ -130,7 +130,7 @@
               label="操作">
               <template slot-scope="scope">
                 <el-input class="djrgthnfsedsd" v-model="scope.row.buyNum" placeholder="数量"></el-input>
-                <span class="dlfgoerrt" @click="tijaaao(scope.row)">提交</span>
+                <span style="cursor: pointer;" class="dlfgoerrt" @click="tijaaao(scope.row)">提交</span>
               </template>
             </el-table-column>
           </el-table>

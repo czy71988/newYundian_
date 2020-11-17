@@ -77,6 +77,7 @@
         </el-form-item>
         <div class="btn">
           <el-button type="primary" @click="submit" style="width:240px">注册</el-button>
+          <p>已有账号，前往<span style="cursor: pointer;" @click="moke">登录</span></p>
         </div>
       </el-form>
     </div>
@@ -221,6 +222,9 @@ export default {
         this.$message.error('获取验证码失败，' + err.message)
       })
     },
+    moke () {
+      this.$router.push({ path: '/login' })
+    },
     countDown () {
       const time = this._time
       this._timeId = setTimeout(() => {
@@ -327,12 +331,20 @@ export default {
       width: 100%;
       padding-right: 18px;
       cursor: pointer;
+      height: 100%;
     }
     .btn {
       text-align: center;
       padding-left: 120px;
       padding-bottom: 30px;
       box-sizing: border-box;
+      p {
+        font-size: 12px;
+        line-height: 30px;
+        span {
+          color: #409EFF;
+        }
+      }
     }
     .title {
       text-align: center;

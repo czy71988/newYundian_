@@ -53,8 +53,8 @@
             label="操作"
             width="300">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
-              <span :class="scope.row.state !== 1 ? 'shopType_span2' : 'shopType_span22'" @click="xiajia(scope.row)"><i class="el-icon-sort"></i>{{scope.row.state !== 1 ? '上架' : '下架'}}</span>
+              <span style="cursor: pointer;" class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
+              <span style="cursor: pointer;" :class="scope.row.state !== 1 ? 'shopType_span2' : 'shopType_span22'" @click="xiajia(scope.row)"><i class="el-icon-sort"></i>{{scope.row.state !== 1 ? '上架' : '下架'}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -62,8 +62,8 @@
     </div>
     <!-- 分页 -->
     <div class="bottom_bottom">
-      <div @click="shujudaochu" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>导出数据</div>
-      <div @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加类目</div>
+      <div style="cursor: pointer;" @click="shujudaochu" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>导出数据</div>
+      <div style="cursor: pointer;" @click="chuanjianshagpin" class="bottom_chuangjian"><i class="el-icon-circle-plus-outline"></i>添加类目</div>
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
@@ -102,8 +102,8 @@
               <el-input v-model="form.commissionRate"></el-input>
             </el-form-item>
             <div class="chuangjian_dialog">
-              <span @click="shopShow = !shopShow">取消</span>
-              <span @click="chuangjianOver">{{sdbgg}}</span>
+              <span style="cursor: pointer;" @click="shopShow = !shopShow">取消</span>
+              <span style="cursor: pointer;" @click="chuangjianOver">{{sdbgg}}</span>
             </div>
           </el-form>
         </div>

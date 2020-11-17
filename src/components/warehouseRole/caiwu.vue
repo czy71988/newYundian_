@@ -104,7 +104,7 @@
             label="查看详情"
             width="100">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
+              <span style="cursor: pointer;" class="shopType_span1" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>订单详情</span>
             </template>
           </el-table-column>
         </el-table>

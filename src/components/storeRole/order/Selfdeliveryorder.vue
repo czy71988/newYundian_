@@ -76,7 +76,7 @@
             label="商品详情"
             width="100">
             <template slot-scope="scope">
-              <span class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>点击查看详商品</span>
+              <span style="cursor: pointer;" class="shopType_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>点击查看详商品</span>
             </template>
           </el-table-column>
         </el-table>

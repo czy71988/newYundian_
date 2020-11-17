@@ -51,7 +51,7 @@
                 :src="xiangqingtu[0]"
                 :preview-src-list="xiangqingtu">
               </el-image>
-              <span v-else @click="mokedetailsUrls(scope.row.id)">点击查看详情图</span>
+              <span style="cursor: pointer;" v-else @click="mokedetailsUrls(scope.row.id)">点击查看详情图</span>
             </template>
           </el-table-column>
           <el-table-column

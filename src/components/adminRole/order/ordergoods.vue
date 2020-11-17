@@ -43,9 +43,9 @@
           </el-option>
         </el-select>
         <div>
-          <span @click="qingkong">重置</span>
-          <span @click="sousuo">搜索</span>
-          <span @click="Eexport">批量导出</span>
+          <span style="cursor: pointer;" @click="qingkong">重置</span>
+          <span style="cursor: pointer;" @click="sousuo">搜索</span>
+          <span style="cursor: pointer;" @click="Eexport">批量导出</span>
         </div>
       </div>
     </div>
@@ -107,7 +107,7 @@
             label="查看详情"
             width="80">
             <template slot-scope="scope">
-              <span class="sdreg" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>详情</span>
+              <span style="cursor: pointer;" class="sdreg" @click="bianji(scope.row.tradeParentId)"><i class="el-icon-edit"></i>详情</span>
             </template>
           </el-table-column>
         </el-table>

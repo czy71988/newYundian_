@@ -17,8 +17,8 @@
           </el-option>
         </el-select>
         <div>
-          <span @click="sousuo">搜索</span>
-          <span>批量导出</span>
+          <span style="cursor: pointer;" @click="sousuo">搜索</span>
+          <span style="cursor: pointer;">批量导出</span>
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <span style="color: #4A4AFF" v-if="scope.row.examine !== 1" @click="Mokeexamine(scope.row.id)">{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
+              <span style="color: #4A4AFF; cursor: pointer;" v-if="scope.row.examine !== 1" @click="Mokeexamine(scope.row.id)">{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
               <span style="color: #8E8E8E" v-else>{{scope.row.examine === 0 ? '待审核' : (scope.row.examine === 1 ? '审核通过' : '审核拒绝')}}</span>
             </template>
           </el-table-column>
@@ -90,7 +90,7 @@
             align="center"
             label="加入商品库">
             <template slot-scope="scope">
-              <span class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
+              <span style="cursor: pointer;" class="Banner_span1" @click="bianji(scope.row)"><i class="el-icon-edit"></i>编辑</span>
             </template>
           </el-table-column>
         </el-table>

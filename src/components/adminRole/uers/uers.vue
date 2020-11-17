@@ -22,8 +22,8 @@
         <span>选择门店：</span>
         <el-input v-model="denglufrom.storeName" placeholder="请输入内容"></el-input>
         <div>
-          <span @click="sousuo">搜索</span>
-          <span>批量导出</span>
+          <span style="cursor: pointer;" @click="sousuo">搜索</span>
+          <span style="cursor: pointer;">批量导出</span>
         </div>
       </div>
     </div>
